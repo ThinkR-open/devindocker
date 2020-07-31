@@ -1,0 +1,56 @@
+---
+title: "Dev in Docker"
+author: "Sébatsien Rochette"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ad-dev-in-docker}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<script type="text/javascript">
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE
+)
+
+library(devindocker)
+```
+
+# Create new package
+```{r}
+tempdir <- tempdir()
+my_project <- normalizePath(file.path(tempdir, "myproject"), mustWork = FALSE)
+usethis::create_package(my_project, open = FALSE)
+```
+
+# Launch Docker
+```{r, eval=FALSE}
+# project_path <- "" # default
+project_path <- my_project
+
+# Which Rstudio container ? ----
+container <- c("thinkr/rstudio3_5_2",
+               "thinkr/rstudio3_5_2_geo",
+               "thinkr/rstudio3_6_1_geo")[3]
+
+# Which port ? ----
+# _Useful if multiple Rstudio Server to launch
+port <- 8788
+
+# Start Docker project
+launch_proj_docker(project_path = project_path,
+                   container = container,
+                   port = port)
+
+# Stop Docker properly
+stop_proj_docker(project_path = project_path, sleep = 5)
+```
+
+

@@ -1,0 +1,28 @@
+Package: devindocker
+Title: Help Develop a R Project Inside a Docker Container
+Version: 0.0.0.9000
+Authors@R: 
+    c(person(given = "Sébastien",
+             family = "Rochette",
+             role = c("aut", "cre"),
+             email = "sebastien@thinkr.fr",
+             comment = c(ORCID = "0000-0002-1565-9313")),
+      person(given = "ThinkR",
+             role = "cph"))
+Description: Help develop a R project inside a Docker container.
+License: MIT + file LICENSE
+Imports: 
+    future,
+    pagedown,
+    stats,
+    utils
+Suggests: 
+    knitr,
+    rmarkdown,
+    usethis
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.0
