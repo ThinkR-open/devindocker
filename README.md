@@ -9,8 +9,8 @@
 status](https://github.com/ThinkR-open/devindocker/workflows/R-CMD-check/badge.svg)](https://github.com/ThinkR-open/devindocker/actions)
 <!-- badges: end -->
 
-The goal of {devindocker} is to help launch your R project inside a
-Docker container with Rstudio server.
+The goal of {devindocker}, as “Development In Docker”, is to help launch
+your R project inside a Docker container with Rstudio server.
 
   - You can develop with the same architecture as your clients
   - You can test your project / package on a specific architecture
@@ -36,6 +36,7 @@ Let us create a random directory with a file inside.
 # Temporary project
 tempdir <- tempdir()
 project_path <- file.path(tempdir, "myproject")
+dir.create(project_path)
 # Add a file inside
 cat("# my R file", file = file.path(project_path, "my-file.R"))
 ```
@@ -64,7 +65,10 @@ launch_proj_docker(
   port = port)
 ```
 
-End the container after your work.
+When you’re done, do not forget to stop properly the Rstudio Server:
+Click on Top right button to quit or `q()` in the console.
+
+Then, end the container.
 
 ``` r
 # Stop Docker properly

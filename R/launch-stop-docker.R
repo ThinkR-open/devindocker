@@ -63,7 +63,7 @@ launch_proj_docker <- function(project_path = "",
                                chrome_path = pagedown::find_chrome(),
                                port = 8787,
                                renv_inst = FALSE,
-                               renv_cache,
+                               renv_cache = FALSE,
                                update_docker = TRUE
                                # vbox = FALSE
 ) {

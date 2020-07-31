@@ -24,6 +24,8 @@ library(devindocker)
 ```
 
 # Create new package
+
+You can use {devindocker} for any directory, project or even package. In the end, these are all folders on your computer.
 ```{r}
 tempdir <- tempdir()
 my_project <- normalizePath(file.path(tempdir, "myproject"), mustWork = FALSE)
