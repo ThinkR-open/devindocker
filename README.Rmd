@@ -25,7 +25,7 @@ The goal of {devindocker}, as "Development In Docker", is to help launch your R 
 - You can develop with the same architecture as your clients
 - You can test your project / package on a specific architecture
 - You can combine this with {renv} to keep packages versions installed inside your directory (and thus available next time you start the container)
-
+- All changes in settings of your Rstudio Server will be kept for next start (last project opened, editor theme, ...)
 
 ## Installation
 

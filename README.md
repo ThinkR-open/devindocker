@@ -17,6 +17,8 @@ your R project inside a Docker container with Rstudio server.
   - You can combine this with {renv} to keep packages versions installed
     inside your directory (and thus available next time you start the
     container)
+  - All changes in settings of your Rstudio Server will be kept for next
+    start (last project opened, editor theme, …)
 
 ## Installation
 
