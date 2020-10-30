@@ -101,7 +101,7 @@
   <div class="contents col-md-9">
 <div id="devindocker" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#devindocker" class="anchor"></a>devindocker</h1></div>
+<a href="#devindocker" class="anchor"></a>{devindocker}</h1></div>
 <!-- badges: start -->
 
 <p>The goal of {devindocker}, as “Development In Docker”, is to help launch your R project inside a Docker container with Rstudio server.</p>
@@ -115,42 +115,87 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="co"># install.packages("remotes")</span>
-<span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"ThinkR-open/devindocker"</span>)</pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="co"># install.packages("remotes")</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"ThinkR-open/devindocker"</span><span class="op">)</span></pre></div>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
 <p>Let us create a random directory with a file inside.</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="co"># Temporary project</span>
-<span class="no">tempdir</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>()
-<span class="no">project_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="no">tempdir</span>, <span class="st">"myproject"</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span>(<span class="no">project_path</span>)
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="co"># Temporary project</span>
+<span class="va">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">project_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">project_path</span><span class="op">)</span>
 <span class="co"># Add a file inside</span>
-<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span>(<span class="st">"# my R file"</span>, <span class="kw">file</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="no">project_path</span>, <span class="st">"my-file.R"</span>))</pre></div>
-<p>Launch a Docker container with your directory inside. This should be a container with Rstudio server inside.</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="co"># Which path to your working directory / project</span>
-<span class="no">project_path</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="no">tempdir</span>, <span class="st">"myproject"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"# my R file"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">project_path</span>, <span class="st">"my-file.R"</span><span class="op">)</span><span class="op">)</span></pre></div>
+<div id="work-in-a-docker-environment" class="section level3">
+<h3 class="hasAnchor">
+<a href="#work-in-a-docker-environment" class="anchor"></a>Work in a Docker environment</h3>
+<p>Launch a Docker container with your directory inside. This should be a container with Rstudio server inside.<br><em>Note that packages you install will not be kept after you stop the container, but RStudio preferences will</em></p>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="co"># Which path to your working directory / project</span>
+<span class="va">project_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
 
 <span class="co"># Which container (with Rstudio inside) ? ----</span>
 <span class="co"># https://hub.docker.com/r/thinkr/rstudio3_5_2_geo</span>
 <span class="co"># https://hub.docker.com/r/rocker/verse</span>
-<span class="no">container</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"thinkr/rstudio3_5_2_geo"</span>,
-               <span class="st">"rocker/verse"</span>)[<span class="fl">1</span>]
+<span class="va">container</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"thinkr/rstudio3_5_2_geo"</span>, 
+               <span class="st">"rocker/verse"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>
 
 <span class="co"># Which port ? ----</span>
 <span class="co"># _Useful if multiple Rstudio Server to launch</span>
-<span class="no">port</span> <span class="kw">&lt;-</span> <span class="fl">8788</span>
+<span class="va">port</span> <span class="op">&lt;-</span> <span class="fl">8788</span>
 
 <span class="co"># Start Docker project ----</span>
-<span class="fu"><a href="reference/launch_proj_docker.html">launch_proj_docker</a></span>(
-  <span class="kw">project_path</span> <span class="kw">=</span> <span class="no">project_path</span>,
-  <span class="kw">container</span> <span class="kw">=</span> <span class="no">container</span>,
-  <span class="kw">port</span> <span class="kw">=</span> <span class="no">port</span>)</pre></div>
+<span class="fu"><a href="reference/launch_proj_docker.html">launch_proj_docker</a></span><span class="op">(</span>
+  project_path <span class="op">=</span> <span class="va">project_path</span>,
+  container <span class="op">=</span> <span class="va">container</span>,
+  port <span class="op">=</span> <span class="va">port</span><span class="op">)</span></pre></div>
 <p>When you’re done, do not forget to stop properly the Rstudio Server: Click on Top right button to quit or <code><a href="https://rdrr.io/r/base/quit.html">q()</a></code> in the console.</p>
 <p>Then, end the container.</p>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="co"># Stop Docker properly</span>
-<span class="fu"><a href="reference/launch_proj_docker.html">stop_proj_docker</a></span>(<span class="kw">project_path</span> <span class="kw">=</span> <span class="no">project_path</span>)</pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="co"># Stop Docker properly</span>
+<span class="fu"><a href="reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span><span class="op">)</span></pre></div>
+</div>
+<div id="use-renv-inside-docker-and-keep-installation-of-packages" class="section level3">
+<h3 class="hasAnchor">
+<a href="#use-renv-inside-docker-and-keep-installation-of-packages" class="anchor"></a>Use {renv} inside Docker and keep installation of packages</h3>
+<p>Launch a Docker container with your directory inside. This should be a container with Rstudio server inside.<br><em>Note that packages you install will be kept after you stop the container, as well as RStudio preferences.</em></p>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="co"># Which path to your working directory / project</span>
+<span class="va">project_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
+
+<span class="co"># Which container (with Rstudio inside) ? ----</span>
+<span class="co"># https://hub.docker.com/r/thinkr/rstudio3_5_2_geo</span>
+<span class="co"># https://hub.docker.com/r/rocker/verse</span>
+<span class="va">container</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"thinkr/rstudio3_5_2_geo"</span>, 
+               <span class="st">"rocker/verse"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>
+
+<span class="co"># Which port ? ----</span>
+<span class="co"># _Useful if multiple Rstudio Server to launch</span>
+<span class="va">port</span> <span class="op">&lt;-</span> <span class="fl">8788</span>
+
+<span class="co"># My renv cache directory on my local computer</span>
+<span class="co"># Used as persistent drive for all you Docker container with {devindocker}</span>
+<span class="va">renv_cache</span> <span class="op">&lt;-</span> <span class="st">"~/renv_cache"</span>
+
+<span class="co"># Start Docker project ----</span>
+<span class="fu">devindocker</span><span class="fu">::</span><span class="fu"><a href="reference/launch_proj_docker.html">launch_proj_docker</a></span><span class="op">(</span>
+  project_path <span class="op">=</span> <span class="va">project_path</span>,
+  container <span class="op">=</span> <span class="va">container</span>,
+  port <span class="op">=</span> <span class="va">port</span>,
+  renv_cache <span class="op">=</span> <span class="va">renv_cache</span>,
+  renv_inst <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># Add an Rmd with instructions inside your project</span>
+  update_docker <span class="op">=</span> <span class="cn">TRUE</span>
+<span class="op">)</span></pre></div>
+<p>When you’re done, do not forget to stop properly the Rstudio Server: Click on Top right button to quit or <code><a href="https://rdrr.io/r/base/quit.html">q()</a></code> in the console.</p>
+<p>Then, end the container.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="co"># Stop Docker properly</span>
+<span class="fu"><a href="reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span><span class="op">)</span></pre></div>
+</div>
 </div>
 </div>
   </div>

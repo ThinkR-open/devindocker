@@ -97,13 +97,14 @@
 
       
 
-      </header><script src="aa-dev-in-docker_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="aa-dev-in-docker_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="aa-dev-in-docker_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="aa-dev-in-docker_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Dev in Docker</h1>
                         <h4 class="author">Sébatsien Rochette</h4>
             
-            <h4 class="date">2020-07-31</h4>
+            <h4 class="date">2020-10-30</h4>
       
       
       <div class="hidden name"><code>aa-dev-in-docker.Rmd</code></div>
@@ -120,11 +121,12 @@ $(document).ready(function () {
 <h1 class="hasAnchor">
 <a href="#create-new-package" class="anchor"></a>Create new package</h1>
 <p>You can use {devindocker} for any directory, project or even package. In the end, these are all folders on your computer.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="no">tempdir</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span>()
-<span class="no">my_project</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html">normalizePath</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span>(<span class="no">tempdir</span>, <span class="st">"myproject"</span>), <span class="kw">mustWork</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
-<span class="kw pkg">usethis</span><span class="kw ns">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span>(<span class="no">my_project</span>, <span class="kw">open</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
-<pre><code>## ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpFBVSnm/myproject/'</code></pre>
-<pre><code>## ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpFBVSnm/myproject'</code></pre>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="va">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>
+<span class="va">my_project</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="va">my_project</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
+<pre><code>## ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp2PIZKZ/myproject/'</code></pre>
+<pre><code>## ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp2PIZKZ/myproject'</code></pre>
 <pre><code>## ✔ Creating 'R/'</code></pre>
 <pre><code>## ✔ Writing 'DESCRIPTION'</code></pre>
 <pre><code>## Package: myproject
@@ -145,25 +147,26 @@ $(document).ready(function () {
 <div id="launch-docker" class="section level1">
 <h1 class="hasAnchor">
 <a href="#launch-docker" class="anchor"></a>Launch Docker</h1>
-<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="co"># project_path &lt;- "" # default</span>
-<span class="no">project_path</span> <span class="kw">&lt;-</span> <span class="no">my_project</span>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="co"># project_path &lt;- "" # default</span>
+<span class="va">project_path</span> <span class="op">&lt;-</span> <span class="va">my_project</span>
 
 <span class="co"># Which Rstudio container ? ----</span>
-<span class="no">container</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"thinkr/rstudio3_5_2"</span>,
+<span class="va">container</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"thinkr/rstudio3_5_2"</span>,
                <span class="st">"thinkr/rstudio3_5_2_geo"</span>,
-               <span class="st">"thinkr/rstudio3_6_1_geo"</span>)[<span class="fl">3</span>]
+               <span class="st">"thinkr/rstudio3_6_1_geo"</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>
 
 <span class="co"># Which port ? ----</span>
 <span class="co"># _Useful if multiple Rstudio Server to launch</span>
-<span class="no">port</span> <span class="kw">&lt;-</span> <span class="fl">8788</span>
+<span class="va">port</span> <span class="op">&lt;-</span> <span class="fl">8788</span>
 
 <span class="co"># Start Docker project</span>
-<span class="fu"><a href="../reference/launch_proj_docker.html">launch_proj_docker</a></span>(<span class="kw">project_path</span> <span class="kw">=</span> <span class="no">project_path</span>,
-                   <span class="kw">container</span> <span class="kw">=</span> <span class="no">container</span>,
-                   <span class="kw">port</span> <span class="kw">=</span> <span class="no">port</span>)
+<span class="fu"><a href="../reference/launch_proj_docker.html">launch_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span>,
+                   container <span class="op">=</span> <span class="va">container</span>,
+                   port <span class="op">=</span> <span class="va">port</span><span class="op">)</span>
 
 <span class="co"># Stop Docker properly</span>
-<span class="fu"><a href="../reference/launch_proj_docker.html">stop_proj_docker</a></span>(<span class="kw">project_path</span> <span class="kw">=</span> <span class="no">project_path</span>, <span class="kw">sleep</span> <span class="kw">=</span> <span class="fl">5</span>)</pre></body></html></div>
+<span class="fu"><a href="../reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span>, sleep <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></pre></div>
 </div>
   </div>
 
