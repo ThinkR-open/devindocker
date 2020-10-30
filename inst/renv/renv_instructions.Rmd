@@ -1,5 +1,5 @@
 ---
-title: "Use renv"
+title: "Use renv inside Docker container for package development"
 ---
 
 ```{r setup, include=FALSE}
@@ -55,14 +55,6 @@ if (dir.exists("/opt/local/renv/cache")) {
   # Cache inside the docker container with persistent drive
   Sys.setenv(RENV_PATHS_CACHE = "/opt/local/renv/cache")
   renv::settings$use.cache(TRUE)
-} else if (dir.exists("/mnt/Data/renv_cache")) {
-  # Your local path on linux/unix if project used out of Docker
-  Sys.setenv(RENV_PATHS_CACHE = "/mnt/Data/renv_cache")
-  renv::settings$use.cache(TRUE)
-} else if (dir.exists("D:/renv_cache_windows/")) {
-  # Your local path on Windows if project used out of Docker
-  Sys.setenv(RENV_PATHS_CACHE = "D:/renv_cache_windows")
-  renv::settings$use.cache(TRUE)
 } else {
   # No cache
   renv::settings$use.cache(FALSE)
@@ -76,6 +68,27 @@ If you are satisfied with the effects, run:
 renv::snapshot()
 ```
 
+Note that you may want to limit the number of packages added in the lockfile to the one listed in your DESCRIPTION file. To do so, you can use:
+```{r}
+renv::snapshot(type = "explicit")
+```
+But in you are in the process of package development, you may want to also share versions of packages like {devtools}, {roxygen2}, {usethis}, {testthat}, {covr}, {attachment}, ... 
+As well as {renv} itself.
+In this case, you can use the `package` parameter :
+```{r}
+# Update DESCRIPTION file
+attachment::att_amend_desc()
+# List dependencies
+custom_packages <- c(attachment::att_from_description(),
+                     "renv",
+                     "devtools", "roxygen2", "usethis",
+                     "testthat", "covr", "attachment",
+                     "pkgdown")
+# Snapshot
+renv::snapshot(packages = custom_packages)
+```
+
+
 If you are not satisfied, run:
 ```{r}
 renv::restore() # instead of snapshot()
@@ -86,6 +99,16 @@ And after you ran `devtools::check()`, store your packages list with:
 
 ```{r}
 renv::snapshot()
+# or only those in DESCRIPTION with
+renv::snapshot(type = "explicit")
+# OR packages in DESCRIPTION + development utilities
+attachment::att_amend_desc()
+custom_packages <- c(attachment::att_from_description(),
+                     "renv",
+                     "devtools", "roxygen2", "usethis",
+                     "testthat", "covr", "attachment",
+                     "pkgdown")
+renv::snapshot(packages = custom_packages)
 ```
 
 ## If you updated your branch from the server
@@ -94,11 +117,38 @@ There may be new packages needed, therefore run:
 renv::restore()
 ```
 
-# If you need to upgrade (or otherwise change) the version of renv
+# If you need to upgrade or downgrade
+
+## Upgrade (or otherwise change) the version of renv
 This should normally be automatically done in the `renv/activate.R`, but you can do it with:
 
 ```{r}
 renv::upgrade()
+```
+
+## Upgrade or fix CRAN repository
+```{r}
+lock <- renv:::lockfile("renv.lock")
+
+# set the repositories for a lockfile
+# All CRAN : "https://cloud.r-project.org"
+# Fixed MRAN example: "https://mran.revolutionanalytics.com/snapshot/2019-08-05"
+# Fixed CRAN date example, allowing for Linux binaries: "https://packagemanager.rstudio.com/all/308"
+# Latest CRAN repository allowing for Linux binaries: "https://packagemanager.rstudio.com/all/latest"
+lock$repos(CRAN = "https://packagemanager.rstudio.com/all/latest")
+
+# write to file
+lock$write("renv.lock")
+
+# Update your packages
+update.packages()
+```
+
+## Downgrade a package to a specific version
+Depending on the repos you chose, you may not be able to choose a specific package version.
+Instead use:
+```{r}
+remotes::install_version("golem", version = "0.3.0", repos = "https://cloud.r-project.org")
 ```
 
 

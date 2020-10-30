@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# devindocker
+# {devindocker}
 
 <!-- badges: start -->
 
@@ -43,8 +43,12 @@ dir.create(project_path)
 cat("# my R file", file = file.path(project_path, "my-file.R"))
 ```
 
+### Work in a Docker environment
+
 Launch a Docker container with your directory inside. This should be a
-container with Rstudio server inside.
+container with Rstudio server inside.  
+*Note that packages you install will not be kept after you stop the
+container, but RStudio preferences will*
 
 ``` r
 # Which path to your working directory / project
@@ -65,6 +69,52 @@ launch_proj_docker(
   project_path = project_path,
   container = container,
   port = port)
+```
+
+When you’re done, do not forget to stop properly the Rstudio Server:
+Click on Top right button to quit or `q()` in the console.
+
+Then, end the container.
+
+``` r
+# Stop Docker properly
+stop_proj_docker(project_path = project_path)
+```
+
+### Use {renv} inside Docker and keep installation of packages
+
+Launch a Docker container with your directory inside. This should be a
+container with Rstudio server inside.  
+*Note that packages you install will be kept after you stop the
+container, as well as RStudio preferences.*
+
+``` r
+# Which path to your working directory / project
+project_path <- file.path(tempdir, "myproject")
+
+# Which container (with Rstudio inside) ? ----
+# https://hub.docker.com/r/thinkr/rstudio3_5_2_geo
+# https://hub.docker.com/r/rocker/verse
+container <- c("thinkr/rstudio3_5_2_geo", 
+               "rocker/verse")[1]
+
+# Which port ? ----
+# _Useful if multiple Rstudio Server to launch
+port <- 8788
+
+# My renv cache directory on my local computer
+# Used as persistent drive for all you Docker container with {devindocker}
+renv_cache <- "~/renv_cache"
+
+# Start Docker project ----
+devindocker::launch_proj_docker(
+  project_path = project_path,
+  container = container,
+  port = port,
+  renv_cache = renv_cache,
+  renv_inst = TRUE, # Add an Rmd with instructions inside your project
+  update_docker = TRUE
+)
 ```
 
 When you’re done, do not forget to stop properly the Rstudio Server:
