@@ -10,7 +10,15 @@ knitr::opts_chunk$set(
 
 # First time
 
-- Be sure to be inside your Rstudio project
+*Follow each step carefully until section "You can restart..."*
+
+## Work inside a project
+
+Start you project : Click on the `".Rproj"` file in your project directory.
+
+## Set your RStudio to show hidden files
+
+Files pane > More > Show Hidden Files
 
 ## You may need {renv}
 
@@ -28,37 +36,81 @@ usethis::use_build_ignore("renv_instructions.Rmd")
 
 ## The first time you launch your project in the Docker container, run :
 ```{r}
-renv::consent(TRUE)
+# Define project library out of the project. 
+# In accordance with `renv_out = TRUE` when launching {devindocker}
+Sys.setenv(RENV_PATHS_LIBRARY_ROOT = "~/.renv/library")
+
+renv::consent(TRUE) # Open the Console to answer question to proceed
 renv::activate()
 ```
 
-## Restore the project from the lock file if any problem
+## Set up shared cache and initiate with {renv installation}
+
 ```{r}
-renv::init()
+# Set up cache
+Sys.setenv(RENV_PATHS_CACHE = "/opt/local/renv/cache")
+renv::settings$use.cache(TRUE)
+# Install {renv} in global cache
+renv::install("renv")
 ```
 
-# Activate cache shared on host
-- Store this code in your *project* `.Rprofile` file
-  `Sys.setenv(RENV_PATHS_CACHE = "/opt/local/renv/cache")`
-- If cache *not* shared with host with option `renv_cache`, then de-activate cache otherwise packages will disappear at next Docker restart
-`renv::settings$use.cache(FALSE)`
-
-## .Rprofile content
-Store this code inside your project `.Rprofile` file to reduce problems with cache.
+## Setup .Rprofile content
+Store the following code inside your project `.Rprofile` file to reduce problems with cache (Open .Rprofile with: `usethis::edit_r_profile(scope = "project")`). 
+Add code in this order:  
 
 ```r
+Sys.setenv(RENV_PATHS_LIBRARY_ROOT = "~/.renv/library")
+
 source("renv/activate.R")
 renv::activate()
 
 # cache ----
 if (dir.exists("/opt/local/renv/cache")) {
   # Cache inside the docker container with persistent drive
+  # shared on host
   Sys.setenv(RENV_PATHS_CACHE = "/opt/local/renv/cache")
   renv::settings$use.cache(TRUE)
 } else {
   # No cache
   renv::settings$use.cache(FALSE)
 }
+```
+
+Restart your RStudio session
+
+## You can now stop Rstudio server and stop the container. Then re-launch container to verify everything is correctly set up
+
+*Do not worry now about different {renv} versions*  
+End of initialization. Then you can have a look at following commands for dev.
+
+## If you have {renv} mismatch messages
+
+Follow instructions of {renv} in your Console. 
+This might be running:
+
+```{r}
+renv::snapshot()
+```
+
+
+## If you have broken symlinks at restart
+
+This is due to the change of the global cache. 
+You will need to re-install packages as follows:
+
+```{r}
+ll <- list.files(.libPaths()[1], full.names = FALSE)
+for (l in ll) {
+  try(install.packages(l))
+}
+```
+
+Restart your Rstudio session. There should not be anymore symlinks problems.  
+Try again to stop the RStudio session, stop the container and relaunch to verify installation.
+
+# Restore the project from the lock file if any problem
+```{r}
+renv::init()
 ```
 
 # During the dev process

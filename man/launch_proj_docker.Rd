@@ -6,7 +6,7 @@
 \title{Launch and stop Docker}
 \usage{
 launch_proj_docker(
-  project_path = "",
+  project_path = ".",
   container = "thinkr/rstudio3_6_1_geo",
   with_mysql = FALSE,
   mysql_docker = "mysql:8.0.16",
@@ -16,6 +16,8 @@ launch_proj_docker(
   port = 8787,
   renv_inst = FALSE,
   renv_cache = FALSE,
+  renv_out = TRUE,
+  renv_out_dir,
   update_docker = TRUE
 )
 
@@ -48,6 +50,11 @@ Help with \code{\link[pagedown:find_chrome]{pagedown::find_chrome()}}, but use t
 
 \item{renv_cache}{Path to renv cache on your computer. Set to FALSE to not use renv.}
 
+\item{renv_out}{Whether to set {renv} libraries out of the project.}
+
+\item{renv_out_dir}{Where to store project libraries. Default to a ".renv" folder
+in the parent directory of "project_path"}
+
 \item{update_docker}{Logical. Whether to update Docker container with DockerHub.}
 
 \item{sleep}{Numeric. Number of seconds to wait for user to correctly stop Rstudio Server}
@@ -56,6 +63,10 @@ Help with \code{\link[pagedown:find_chrome]{pagedown::find_chrome()}}, but use t
 Launch and stop Docker
 
 Stop running Docker container
+}
+\details{
+renv_out : It is recommended to set {renv library} out of the project to avoid copy of entire library
+during package checks. See \code{vignette("packages", package = "renv")}.
 }
 \examples{
 \dontrun{

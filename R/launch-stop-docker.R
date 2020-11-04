@@ -11,9 +11,16 @@
 #' @param port Local port to which to launch Rstudio Server
 #' @param renv_inst Logical. Whether to add a R script with {renv} instructions in the project.
 #' @param renv_cache Path to renv cache on your computer. Set to FALSE to not use renv.
+#' @param renv_out Whether to set {renv} libraries out of the project.
+#' @param renv_out_dir Where to store project libraries. Default to a ".renv" folder
+#' in the parent directory of "project_path"
 #' @param update_docker Logical. Whether to update Docker container with DockerHub.
 #'
 #' @importFrom utils browseURL
+#'
+#' @details
+#' renv_out : It is recommended to set {renv library} out of the project to avoid copy of entire library
+#' during package checks. See \code{vignette("packages", package = "renv")}.
 #'
 #' @export
 #' @examples
@@ -54,7 +61,7 @@
 #' stop_proj_docker(project_path = project_path, sleep = 5)
 #' }
 
-launch_proj_docker <- function(project_path = "",
+launch_proj_docker <- function(project_path = ".",
                                container = "thinkr/rstudio3_6_1_geo",
                                with_mysql = FALSE,
                                mysql_docker = "mysql:8.0.16",
@@ -64,6 +71,8 @@ launch_proj_docker <- function(project_path = "",
                                port = 8787,
                                renv_inst = FALSE,
                                renv_cache = FALSE,
+                               renv_out = TRUE,
+                               renv_out_dir,
                                update_docker = TRUE
                                # vbox = FALSE
 ) {
@@ -85,6 +94,12 @@ launch_proj_docker <- function(project_path = "",
     # Hide this file
     # rstudio appearance preferences
     dir.create(normalizePath(file.path(project_path, "rstudio_dotconfig"), mustWork = FALSE))
+  }
+  if (isTRUE(renv_out)) {
+    if (missing(renv_out_dir)) {
+      renv_out_dir <- normalizePath(file.path(dirname(project_path), ".renv"), mustWork = FALSE)
+    }
+    if (!dir.exists(renv_out_dir)) {dir.create(renv_out_dir)}
   }
 
   # .gitignore
@@ -208,11 +223,16 @@ launch_proj_docker <- function(project_path = "",
     # {renv} path in container
     RENV_PATHS_CACHE_CONTAINER <- "/opt/local/renv/cache"
     # RENV_PATHS_CACHE_CONTAINER <- "/home/rstudio/.local/share/renv/cache"
+    RENV_PATHS_LIBRARY_ROOT_CONTAINER = "/home/rstudio/.renv/library"
     # Directory with all {renv} package cache on host
     RENV_PATHS_CACHE_HOST <- normalizePath(renv_cache, mustWork = FALSE)
     if (!dir.exists(RENV_PATHS_CACHE_HOST)) {
       dir.create(RENV_PATHS_CACHE_HOST)
       message(RENV_PATHS_CACHE_HOST, " was created")
+    }
+    # Directory with local copy of packages for the project
+    if (isTRUE(renv_out)) {
+      RENV_PATHS_LIBRARY_ROOT_HOST = renv_out_dir
     }
   }
 
@@ -233,8 +253,12 @@ launch_proj_docker <- function(project_path = "",
         ifelse(isTRUE(with_mysql), " --net r-db", ""),
         " -d -e DISABLE_AUTH=true",
         # {renv}
+        # _Global renv cache
         ifelse(!is.null(renv_cache), paste0(" -e RENV_PATHS_CACHE=", RENV_PATHS_CACHE_CONTAINER), ""),
         ifelse(!is.null(renv_cache), paste0(" -v ", RENV_PATHS_CACHE_HOST, ":", RENV_PATHS_CACHE_CONTAINER), ""),
+        # _Project renv library
+        ifelse(isTRUE(renv_out), paste0(" -e RENV_PATHS_LIBRARY_ROOT=", RENV_PATHS_LIBRARY_ROOT_CONTAINER), ""),
+        ifelse(isTRUE(renv_out), paste0(" -v ", RENV_PATHS_LIBRARY_ROOT_HOST, ":", RENV_PATHS_LIBRARY_ROOT_CONTAINER), ""),
 
         # Chrome
         ifelse(isTRUE(with_chrome), paste0(" -v ", chrome_path, ":/opt/local/chromium"), ""),

@@ -55,10 +55,8 @@ container, but RStudio preferences will*
 project_path <- file.path(tempdir, "myproject")
 
 # Which container (with Rstudio inside) ? ----
-# https://hub.docker.com/r/thinkr/rstudio3_5_2_geo
 # https://hub.docker.com/r/rocker/verse
-container <- c("thinkr/rstudio3_5_2_geo", 
-               "rocker/verse")[1]
+container <- "rocker/geospatial:4.0.1"
 
 # Which port ? ----
 # _Useful if multiple Rstudio Server to launch
@@ -83,20 +81,27 @@ stop_proj_docker(project_path = project_path)
 
 ### Use {renv} inside Docker and keep installation of packages
 
+**Note that you need to launch your project with {devindocker} from
+outside this project. Never ever open it again locally (out of a Docker
+container) if you want to avoid problems with bad and not compatible
+local {renv} setup. It is recommended to create a project dedicated to
+launch {devindocker} projects.**
+
 Launch a Docker container with your directory inside. This should be a
 container with Rstudio server inside.  
 *Note that packages you install will be kept after you stop the
 container, as well as RStudio preferences.*
+
+**Follow instructions in the `"renv_instructions.Rmd"` file that is
+created inside your project.**
 
 ``` r
 # Which path to your working directory / project
 project_path <- file.path(tempdir, "myproject")
 
 # Which container (with Rstudio inside) ? ----
-# https://hub.docker.com/r/thinkr/rstudio3_5_2_geo
 # https://hub.docker.com/r/rocker/verse
-container <- c("thinkr/rstudio3_5_2_geo", 
-               "rocker/verse")[1]
+container <- "rocker/geospatial:4.0.1"
 
 # Which port ? ----
 # _Useful if multiple Rstudio Server to launch

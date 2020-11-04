@@ -1,5 +1,5 @@
 ---
-title: "Dev in Docker"
+title: "Development in Docker"
 author: "Sébatsien Rochette"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -37,10 +37,8 @@ usethis::create_package(my_project, open = FALSE)
 # project_path <- "" # default
 project_path <- my_project
 
-# Which Rstudio container ? ----
-container <- c("thinkr/rstudio3_5_2",
-               "thinkr/rstudio3_5_2_geo",
-               "thinkr/rstudio3_6_1_geo")[3]
+# Which container with RStudio server? ----
+container <- "rocker/geospatial:4.0.1"
 
 # Which port ? ----
 # _Useful if multiple Rstudio Server to launch

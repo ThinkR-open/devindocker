@@ -1,0 +1,110 @@
+---
+title: "Development in Docker with {renv}"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ab-dev-in-docker-with-renv}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(devindocker)
+```
+
+# Create new package
+
+You can use {devindocker} for any directory, project or even package.
+In the end, these are all folders on your computer.
+```{r}
+tempdir <- tempdir()
+my_project <- normalizePath(file.path(tempdir, "myproject"), mustWork = FALSE)
+usethis::create_package(my_project, open = FALSE)
+```
+
+### Use {renv} inside Docker and keep installation of packages
+
+**Note that you need to launch your project with {devindocker} from outside this project. Never ever open it again locally (out of a Docker container) if you want to avoid problems with bad and not compatible local {renv} setup. It is recommended to create a project dedicated to launch {devindocker} projects.**
+
+Launch a Docker container with your directory inside. 
+This should be a container with Rstudio server.
+
+Common and project {renv} libraries will be stored on your local computer (See details in the next section).
+
+You will need to set up {renv} the first time you launch the Docker container.
+**Follow instructions in the `"renv_instructions.Rmd"` file that is created inside your project.**
+
+```{r, eval=FALSE}
+# Which path to your working directory / project
+project_path <- file.path(tempdir, "myproject")
+
+# Which container (with Rstudio inside) ? ----
+# https://hub.docker.com/r/rocker/verse
+container <- "rocker/geospatial:4.0.1"
+
+# Which port ? ----
+# _Useful if multiple Rstudio Server to launch
+port <- 8788
+
+# My renv cache directory on my local computer
+# Used as persistent drive for all you Docker container with {devindocker}
+renv_cache <- "~/renv_cache"
+
+# Start Docker project ----
+devindocker::launch_proj_docker(
+  project_path = project_path,
+  container = container,
+  port = port,
+  renv_cache = renv_cache,
+  renv_inst = TRUE, # Add an Rmd with instructions inside your project
+  update_docker = TRUE
+)
+
+# Follow instructions in "renv_instructions.Rmd" to setup {renv}
+```
+
+When you're done, do not forget to stop properly the Rstudio Server: Click on Top right button to quit or `q()` in the console.
+
+Then, stop the container.
+```{r, eval=FALSE}
+# Stop Docker properly
+stop_proj_docker(project_path = project_path)
+```
+
+### {renv} and its different storage directories
+
+{renv} has two levels of storing downloaded packages. 
+First one is for the project, second one is for your computer:
+
+- `".renv"` directory for the project is by default inside the project directory itself.
+This has some consequences when your project is a package during `check()` because it is copied in the temporary directory of the `check()`.
+A big project library may take some time and some place in your Docker container.
+  + Using {devindocker}, these project specific packages are stored locally in the parent directory of your `project_path` by default, in a folder called `".renv"`. 
+You can change it with parameter `renv_out_dir`. 
+All project stored in the same parent directory will share this local `".renv"` library, using a specific folder inside.
+Inside the Docker container, the `".renv"` directory will be stored at the root of your RStudio server, in the Docker home directory. 
+Show hidden files to se it.
+- The directory for your computer will stored all versions of all packages downloaded, whether you continue to use them in some projects or not.
+This directory is classified by R versions and packages.
+In projects using {renv}, when you install a new package, {renv} will use this common directory to first check if you did not already downloaded the package.
+Then, it will link the specific desired version of the computer library to the project library wih a symlink.
+Inside Docker there is also a common directory.
+Using {devindocker}, this common library will be linked to your local computer library that you can specify using `renv_cache` paramter.
+
+Hence, 
+
+- Packages you install for your project in the Docker will be kept after you stop the container, using a mounted volume. 
+- Global package repository common to all your {renv} project will be shared with your computer, using a mounted volume
+- RStudio preferences will be kept inside your project thanks to internal links with the Docker and a mounted volume.
+
+## Activate cache shared on host
+- Store this code in your *project* `.Rprofile` file
+  `Sys.setenv(RENV_PATHS_CACHE = "/opt/local/renv/cache")`
+- If cache *not* shared with host with option `renv_cache`, then de-activate cache otherwise packages will disappear at next Docker restart
+`renv::settings$use.cache(FALSE)`
