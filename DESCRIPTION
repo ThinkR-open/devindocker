@@ -1,6 +1,6 @@
 Package: devindocker
 Title: Help Develop a R Project Inside a Docker Container
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
     c(person(given = "Sébastien",
              family = "Rochette",
