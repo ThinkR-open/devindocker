@@ -59,6 +59,9 @@ Store the following code inside your project `.Rprofile` file to reduce problems
 Add code in this order:  
 
 ```r
+# If you have a user .Rprofile inside the container, you may want to uncomment this
+# source("~/.Rprofile")
+
 Sys.setenv(RENV_PATHS_LIBRARY_ROOT = "~/.renv/library")
 
 source("renv/activate.R")

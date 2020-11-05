@@ -85,8 +85,9 @@ First one is for the project, second one is for your computer:
 - `".renv"` directory for the project is by default inside the project directory itself.
 This has some consequences when your project is a package during `check()` because it is copied in the temporary directory of the `check()`.
 A big project library may take some time and some place in your Docker container.
-  + Using {devindocker}, these project specific packages are stored locally in the parent directory of your `project_path` by default, in a folder called `".renv"`. 
-You can change it with parameter `renv_out_dir`. 
+  + Using {devindocker}, these project specific packages are stored locally in your `project_path` directory by default, which is the default {renv} behaviour. 
+Indeed, if you use global cache (with `renv_cache`), only symlinks are stored in these directory.  
+You can change it with parameters `renv_out = TRUE` to save these in a folder called `".renv"`, in the parent directory of your project `renv_out_dir`. 
 All project stored in the same parent directory will share this local `".renv"` library, using a specific folder inside.
 Inside the Docker container, the `".renv"` directory will be stored at the root of your RStudio server, in the Docker home directory. 
 Show hidden files to se it.

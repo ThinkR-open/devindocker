@@ -71,7 +71,7 @@ launch_proj_docker <- function(project_path = ".",
                                port = 8787,
                                renv_inst = FALSE,
                                renv_cache = FALSE,
-                               renv_out = TRUE,
+                               renv_out = FALSE,
                                renv_out_dir,
                                update_docker = TRUE
                                # vbox = FALSE
