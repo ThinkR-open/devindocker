@@ -8,6 +8,13 @@
 
 <title>Launch and stop Docker — launch_proj_docker • devindocker</title>
 
+<!-- favicons -->
+<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png" />
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png" />
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
@@ -38,6 +45,7 @@
 <meta property="og:title" content="Launch and stop Docker — launch_proj_docker" />
 <meta property="og:description" content="Launch and stop Docker
 Stop running Docker container" />
+<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -90,7 +98,7 @@ Stop running Docker container" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">devindocker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
       </span>
     </div>
 
@@ -113,9 +121,15 @@ Stop running Docker container" />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/aa-dev-in-docker.html">Dev in Docker</a>
+      <a href="../articles/aa-dev-in-docker.html">Development in Docker</a>
+    </li>
+    <li>
+      <a href="../articles/ab-dev-in-docker-with-renv.html">Development in Docker with {renv}</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -147,7 +161,7 @@ Stop running Docker container" />
     </div>
 
     <pre class="usage"><span class='fu'>launch_proj_docker</span><span class='op'>(</span>
-  project_path <span class='op'>=</span> <span class='st'>""</span>,
+  project_path <span class='op'>=</span> <span class='st'>"."</span>,
   container <span class='op'>=</span> <span class='st'>"thinkr/rstudio3_6_1_geo"</span>,
   with_mysql <span class='op'>=</span> <span class='cn'>FALSE</span>,
   mysql_docker <span class='op'>=</span> <span class='st'>"mysql:8.0.16"</span>,
@@ -157,7 +171,10 @@ Stop running Docker container" />
   port <span class='op'>=</span> <span class='fl'>8787</span>,
   renv_inst <span class='op'>=</span> <span class='cn'>FALSE</span>,
   renv_cache <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  update_docker <span class='op'>=</span> <span class='cn'>TRUE</span>
+  renv_out <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  <span class='va'>renv_out_dir</span>,
+  update_docker <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  is_root <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span>
 
 <span class='fu'>stop_proj_docker</span><span class='op'>(</span>
@@ -212,8 +229,22 @@ Help with <code><a href='https://rdrr.io/pkg/pagedown/man/find_chrome.html'>page
       <td><p>Path to renv cache on your computer. Set to FALSE to not use renv.</p></td>
     </tr>
     <tr>
+      <th>renv_out</th>
+      <td><p>Whether to set renv libraries out of the project.</p></td>
+    </tr>
+    <tr>
+      <th>renv_out_dir</th>
+      <td><p>Where to store project libraries. Default to a ".renv" folder
+in the parent directory of "project_path"</p></td>
+    </tr>
+    <tr>
       <th>update_docker</th>
       <td><p>Logical. Whether to update Docker container with DockerHub.</p></td>
+    </tr>
+    <tr>
+      <th>is_root</th>
+      <td><p>logical. Whether the Docker user has root permissions (add to sudoers).
+Can be useful if you want to simulate your CI behaviour in the Terminal using "<code>sudo R</code>".</p></td>
     </tr>
     <tr>
       <th>sleep</th>
@@ -221,6 +252,10 @@ Help with <code><a href='https://rdrr.io/pkg/pagedown/man/find_chrome.html'>page
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>renv_out : It is recommended to set renv library out of the project to avoid copy of entire library
+during package checks. See <code>vignette("packages", package = "renv")</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>

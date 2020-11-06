@@ -6,6 +6,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Help Develop a R Project Inside a Docker Container • devindocker</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Bootstrap --><link href="cosmo.css" rel="stylesheet">
 <link href="thinkr.css" rel="stylesheet">
@@ -14,6 +20,7 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Help Develop a R Project Inside a Docker Container">
 <meta property="og:description" content="Help develop a R project inside a Docker container.">
+<meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
 <!-- mathjax
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -49,7 +56,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">devindocker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
       </span>
     </div>
 
@@ -72,9 +79,15 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/aa-dev-in-docker.html">Dev in Docker</a>
+      <a href="articles/aa-dev-in-docker.html">Development in Docker</a>
+    </li>
+    <li>
+      <a href="articles/ab-dev-in-docker-with-renv.html">Development in Docker with {renv}</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -99,9 +112,10 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="devindocker" class="section level1">
+<div id="devindocker-" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#devindocker" class="anchor"></a>{devindocker}</h1></div>
+<a href="#devindocker-" class="anchor"></a><span style="color: #2395ec;">dev</span><span style="color: #38424f;">in</span><span style="color: #2395ec;">docker</span> <img src="reference/figures/logo.png" align="right" alt="" width="120">
+</h1></div>
 <!-- badges: start -->
 
 <p>The goal of {devindocker}, as “Development In Docker”, is to help launch your R project inside a Docker container with Rstudio server.</p>
@@ -115,34 +129,33 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="co"># install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"ThinkR-open/devindocker"</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"ThinkR-open/devindocker"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
 <p>Let us create a random directory with a file inside.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="co"># Temporary project</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Temporary project</span>
 <span class="va">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">project_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">project_path</span><span class="op">)</span>
 <span class="co"># Add a file inside</span>
-<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"# my R file"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">project_path</span>, <span class="st">"my-file.R"</span><span class="op">)</span><span class="op">)</span></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"# my R file"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">project_path</span>, <span class="st">"my-file.R"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div id="work-in-a-docker-environment" class="section level3">
 <h3 class="hasAnchor">
 <a href="#work-in-a-docker-environment" class="anchor"></a>Work in a Docker environment</h3>
-<p>Launch a Docker container with your directory inside. This should be a container with Rstudio server inside.<br><em>Note that packages you install will not be kept after you stop the container, but RStudio preferences will</em></p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
+<p>Launch a Docker container with your directory inside. This should be a container with Rstudio server inside.<br><em>Note that you start out of your project, which means you will have to start a new RStudio project if this is your way of working.</em><br><em>Note that packages you install will not be kept after you stop the container, but RStudio preferences will.</em></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">devindocker</span><span class="op">)</span>
 <span class="co"># Which path to your working directory / project</span>
 <span class="va">project_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
 
 <span class="co"># Which container (with Rstudio inside) ? ----</span>
-<span class="co"># https://hub.docker.com/r/thinkr/rstudio3_5_2_geo</span>
 <span class="co"># https://hub.docker.com/r/rocker/verse</span>
-<span class="va">container</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"thinkr/rstudio3_5_2_geo"</span>, 
-               <span class="st">"rocker/verse"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>
+<span class="va">container</span> <span class="op">&lt;-</span> <span class="st">"rocker/geospatial:4.0.1"</span>
 
 <span class="co"># Which port ? ----</span>
 <span class="co"># _Useful if multiple Rstudio Server to launch</span>
@@ -152,26 +165,26 @@
 <span class="fu"><a href="reference/launch_proj_docker.html">launch_proj_docker</a></span><span class="op">(</span>
   project_path <span class="op">=</span> <span class="va">project_path</span>,
   container <span class="op">=</span> <span class="va">container</span>,
-  port <span class="op">=</span> <span class="va">port</span><span class="op">)</span></pre></div>
+  port <span class="op">=</span> <span class="va">port</span><span class="op">)</span></code></pre></div>
 <p>When you’re done, do not forget to stop properly the Rstudio Server: Click on Top right button to quit or <code><a href="https://rdrr.io/r/base/quit.html">q()</a></code> in the console.</p>
 <p>Then, end the container.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="co"># Stop Docker properly</span>
-<span class="fu"><a href="reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Stop Docker properly</span>
+<span class="fu"><a href="reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="use-renv-inside-docker-and-keep-installation-of-packages" class="section level3">
 <h3 class="hasAnchor">
 <a href="#use-renv-inside-docker-and-keep-installation-of-packages" class="anchor"></a>Use {renv} inside Docker and keep installation of packages</h3>
-<p>Launch a Docker container with your directory inside. This should be a container with Rstudio server inside.<br><em>Note that packages you install will be kept after you stop the container, as well as RStudio preferences.</em></p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="co"># Which path to your working directory / project</span>
+<p><strong>Note that you need to launch your project with {devindocker} from outside this project. Never ever open it again locally (out of a Docker container) if you want to avoid problems with bad and not compatible local {renv} setup. It is recommended to create a project dedicated to launch {devindocker} projects.</strong></p>
+<p>Launch a Docker container with your directory inside. This should be a container with RStudio Server inside.<br><em>Note that you start out of your project, which means you will have to start a new RStudio project if this is your way of working.</em><br><em>Note that packages you install will be kept after you stop the container, as well as RStudio preferences.</em></p>
+<p><strong>Follow instructions in the <code>"renv_instructions.Rmd"</code> file that is created inside your project.</strong></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Which path to your working directory / project</span>
 <span class="va">project_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
 
 <span class="co"># Which container (with Rstudio inside) ? ----</span>
-<span class="co"># https://hub.docker.com/r/thinkr/rstudio3_5_2_geo</span>
 <span class="co"># https://hub.docker.com/r/rocker/verse</span>
-<span class="va">container</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"thinkr/rstudio3_5_2_geo"</span>, 
-               <span class="st">"rocker/verse"</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>
+<span class="va">container</span> <span class="op">&lt;-</span> <span class="st">"rocker/geospatial:4.0.1"</span>
 
 <span class="co"># Which port ? ----</span>
 <span class="co"># _Useful if multiple Rstudio Server to launch</span>
@@ -189,13 +202,42 @@
   renv_cache <span class="op">=</span> <span class="va">renv_cache</span>,
   renv_inst <span class="op">=</span> <span class="cn">TRUE</span>, <span class="co"># Add an Rmd with instructions inside your project</span>
   update_docker <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></pre></div>
+<span class="op">)</span></code></pre></div>
 <p>When you’re done, do not forget to stop properly the Rstudio Server: Click on Top right button to quit or <code><a href="https://rdrr.io/r/base/quit.html">q()</a></code> in the console.</p>
 <p>Then, end the container.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="co"># Stop Docker properly</span>
-<span class="fu"><a href="reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Stop Docker properly</span>
+<span class="fu"><a href="reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span><span class="op">)</span></code></pre></div>
+<p><em>There is an implementation to allow connection with a local Docker container having a mysql database setup, which is experimental. It may require an RStudio container with databases system dependencies. See parameter <code>with_mysql</code>.</em></p>
+<p>Find the last version of the instructions for {renv} use here as follows:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"renv/renv_instructions.Rmd"</span>, package <span class="op">=</span> <span class="st">"devindocker"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html">file.edit</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></code></pre></div>
 </div>
+</div>
+<div id="install-docker-on-your-os" class="section level2">
+<h2 class="hasAnchor">
+<a href="#install-docker-on-your-os" class="anchor"></a>Install Docker on your OS</h2>
+<p>Here is the list of resources written by Docker to install Docker on your computer depending on your OS:</p>
+<ul>
+<li>Windows 10 64-bit: Pro, Enterprise, or Education (Build 16299 or later) : <a href="https://docs.docker.com/docker-for-windows/install/" class="uri">https://docs.docker.com/docker-for-windows/install/</a>
+</li>
+<li>Install Windows 10 Home, version 1903 or higher. : <a href="https://docs.docker.com/docker-for-windows/install-windows-home/" class="uri">https://docs.docker.com/docker-for-windows/install-windows-home/</a>
+</li>
+<li>MacOS : <a href="https://docs.docker.com/docker-for-mac/install/" class="uri">https://docs.docker.com/docker-for-mac/install/</a>
+</li>
+<li>Linux: <a href="https://docs.docker.com/engine/install/#server" class="uri">https://docs.docker.com/engine/install/#server</a>
+<ul>
+<li>Ubuntu: <a href="https://docs.docker.com/engine/install/ubuntu/" class="uri">https://docs.docker.com/engine/install/ubuntu/</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div id="code-of-conduct" class="section level2">
+<h2 class="hasAnchor">
+<a href="#code-of-conduct" class="anchor"></a>Code of Conduct</h2>
+<p>Please note that the devindocker project is released with a <a href="https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
   </div>
@@ -206,6 +248,12 @@
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
 <li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+</ul>
+</div>
+<div class="community">
+<h2>Community</h2>
+<ul class="list-unstyled">
+<li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
 </ul>
 </div>
 <div class="developers">

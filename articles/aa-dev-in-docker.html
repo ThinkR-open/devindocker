@@ -5,15 +5,22 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dev in Docker • devindocker</title>
+<title>Development in Docker • devindocker</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Bootstrap --><link href="../cosmo.css" rel="stylesheet">
 <link href="../thinkr.css" rel="stylesheet">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Dev in Docker">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Development in Docker">
 <meta property="og:description" content="devindocker">
+<meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
 <!-- mathjax
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -49,7 +56,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">devindocker</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1.9000</span>
       </span>
     </div>
 
@@ -72,9 +79,15 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/aa-dev-in-docker.html">Dev in Docker</a>
+      <a href="../articles/aa-dev-in-docker.html">Development in Docker</a>
+    </li>
+    <li>
+      <a href="../articles/ab-dev-in-docker-with-renv.html">Development in Docker with {renv}</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -101,10 +114,10 @@
 <script src="aa-dev-in-docker_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Dev in Docker</h1>
+      <h1 data-toc-skip>Development in Docker</h1>
                         <h4 class="author">Sébatsien Rochette</h4>
             
-            <h4 class="date">2020-10-30</h4>
+            <h4 class="date">2020-11-06</h4>
       
       
       <div class="hidden name"><code>aa-dev-in-docker.Rmd</code></div>
@@ -121,12 +134,12 @@ $(document).ready(function () {
 <h1 class="hasAnchor">
 <a href="#create-new-package" class="anchor"></a>Create new package</h1>
 <p>You can use {devindocker} for any directory, project or even package. In the end, these are all folders on your computer.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="va">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">my_project</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="va">my_project</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
-<pre><code>## ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp2PIZKZ/myproject/'</code></pre>
-<pre><code>## ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp2PIZKZ/myproject'</code></pre>
+<span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="va">my_project</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<pre><code>## ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpsMGbCl/myproject/'</code></pre>
+<pre><code>## ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpsMGbCl/myproject'</code></pre>
 <pre><code>## ✔ Creating 'R/'</code></pre>
 <pre><code>## ✔ Writing 'DESCRIPTION'</code></pre>
 <pre><code>## Package: myproject
@@ -147,14 +160,12 @@ $(document).ready(function () {
 <div id="launch-docker" class="section level1">
 <h1 class="hasAnchor">
 <a href="#launch-docker" class="anchor"></a>Launch Docker</h1>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="co"># project_path &lt;- "" # default</span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># project_path &lt;- "" # default</span>
 <span class="va">project_path</span> <span class="op">&lt;-</span> <span class="va">my_project</span>
 
-<span class="co"># Which Rstudio container ? ----</span>
-<span class="va">container</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"thinkr/rstudio3_5_2"</span>,
-               <span class="st">"thinkr/rstudio3_5_2_geo"</span>,
-               <span class="st">"thinkr/rstudio3_6_1_geo"</span><span class="op">)</span><span class="op">[</span><span class="fl">3</span><span class="op">]</span>
+<span class="co"># Which container with RStudio server? ----</span>
+<span class="va">container</span> <span class="op">&lt;-</span> <span class="st">"rocker/geospatial:4.0.1"</span>
 
 <span class="co"># Which port ? ----</span>
 <span class="co"># _Useful if multiple Rstudio Server to launch</span>
@@ -166,7 +177,7 @@ $(document).ready(function () {
                    port <span class="op">=</span> <span class="va">port</span><span class="op">)</span>
 
 <span class="co"># Stop Docker properly</span>
-<span class="fu"><a href="../reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span>, sleep <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></pre></div>
+<span class="fu"><a href="../reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span>, sleep <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
 </div>
   </div>
 
