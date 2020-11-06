@@ -18,7 +18,8 @@ launch_proj_docker(
   renv_cache = FALSE,
   renv_out = FALSE,
   renv_out_dir,
-  update_docker = TRUE
+  update_docker = TRUE,
+  is_root = FALSE
 )
 
 stop_proj_docker(
@@ -56,6 +57,9 @@ Help with \code{\link[pagedown:find_chrome]{pagedown::find_chrome()}}, but use t
 in the parent directory of "project_path"}
 
 \item{update_docker}{Logical. Whether to update Docker container with DockerHub.}
+
+\item{is_root}{logical. Whether the Docker user has root permissions (add to sudoers).
+Can be useful if you want to simulate your CI behaviour in the Terminal using "\code{sudo R}".}
 
 \item{sleep}{Numeric. Number of seconds to wait for user to correctly stop Rstudio Server}
 }

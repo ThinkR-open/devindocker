@@ -15,6 +15,8 @@
 #' @param renv_out_dir Where to store project libraries. Default to a ".renv" folder
 #' in the parent directory of "project_path"
 #' @param update_docker Logical. Whether to update Docker container with DockerHub.
+#' @param is_root logical. Whether the Docker user has root permissions (add to sudoers).
+#' Can be useful if you want to simulate your CI behaviour in the Terminal using "\code{sudo R}".
 #'
 #' @importFrom utils browseURL
 #'
@@ -73,7 +75,8 @@ launch_proj_docker <- function(project_path = ".",
                                renv_cache = FALSE,
                                renv_out = FALSE,
                                renv_out_dir,
-                               update_docker = TRUE
+                               update_docker = TRUE,
+                               is_root = FALSE
                                # vbox = FALSE
 ) {
   # @param vbox Logical. If Docker run on windows in a virtual box, paths need to be changed
@@ -251,6 +254,7 @@ launch_proj_docker <- function(project_path = ".",
       paste0(
         "docker run --name ", projectname,
         ifelse(isTRUE(with_mysql), " --net r-db", ""),
+        ifelse(isTRUE(is_root), " -e ROOT=TRUE", ""),
         " -d -e DISABLE_AUTH=true",
         # {renv}
         # _Global renv cache
