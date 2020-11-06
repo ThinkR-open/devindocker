@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# {devindocker}
+# <span style="color: #2395ec;">dev</span><span style="color: #38424f;">in</span><span style="color: #2395ec;">docker</span> <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
 <!-- badges: start -->
 
@@ -47,10 +47,13 @@ cat("# my R file", file = file.path(project_path, "my-file.R"))
 
 Launch a Docker container with your directory inside. This should be a
 container with Rstudio server inside.  
+*Note that you start out of your project, which means you will have to
+start a new RStudio project if this is your way of working.*  
 *Note that packages you install will not be kept after you stop the
-container, but RStudio preferences will*
+container, but RStudio preferences will.*
 
 ``` r
+library(devindocker)
 # Which path to your working directory / project
 project_path <- file.path(tempdir, "myproject")
 
@@ -88,7 +91,9 @@ local {renv} setup. It is recommended to create a project dedicated to
 launch {devindocker} projects.**
 
 Launch a Docker container with your directory inside. This should be a
-container with Rstudio server inside.  
+container with RStudio Server inside.  
+*Note that you start out of your project, which means you will have to
+start a new RStudio project if this is your way of working.*  
 *Note that packages you install will be kept after you stop the
 container, as well as RStudio preferences.*
 
@@ -131,3 +136,36 @@ Then, end the container.
 # Stop Docker properly
 stop_proj_docker(project_path = project_path)
 ```
+
+*There is an implementation to allow connection with a local Docker
+container having a mysql database setup, which is experimental. It may
+require an RStudio container with databases system dependencies. See
+parameter `with_mysql`.*
+
+Find the last version of the instructions for {renv} use here as
+follows:
+
+``` r
+file <- system.file("renv/renv_instructions.Rmd", package = "devindocker")
+file.edit(file)
+```
+
+## Install Docker on your OS
+
+Here is the list of resources written by Docker to install Docker on
+your computer depending on your OS:
+
+  - Windows 10 64-bit: Pro, Enterprise, or Education (Build 16299 or
+    later) : <https://docs.docker.com/docker-for-windows/install/>
+  - Install Windows 10 Home, version 1903 or higher. :
+    <https://docs.docker.com/docker-for-windows/install-windows-home/>
+  - MacOS : <https://docs.docker.com/docker-for-mac/install/>
+  - Linux: <https://docs.docker.com/engine/install/#server>
+      - Ubuntu: <https://docs.docker.com/engine/install/ubuntu/>
+
+## Code of Conduct
+
+Please note that the devindocker project is released with a [Contributor
+Code of
+Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.

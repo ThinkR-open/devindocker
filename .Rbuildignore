@@ -5,3 +5,5 @@
 ^README\.Rmd$
 ^\.github$
 ^_pkgdown\.yml$
+^CODE_OF_CONDUCT\.md$
+^reference$

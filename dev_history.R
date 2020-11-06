@@ -4,6 +4,7 @@ usethis::use_build_ignore("_pkgdown.yml")
 
 # License
 usethis::use_mit_license("ThinkR")
+usethis::use_code_of_conduct()
 
 # Doc
 usethis::use_readme_rmd()
