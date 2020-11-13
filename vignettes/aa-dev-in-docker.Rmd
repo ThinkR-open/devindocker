@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 library(devindocker)
 ```
 
-# Create new package
+## Create new package
 
 You can use {devindocker} for any directory, project or even package. In the end, these are all folders on your computer.
 ```{r}
@@ -32,7 +32,7 @@ my_project <- normalizePath(file.path(tempdir, "myproject"), mustWork = FALSE)
 usethis::create_package(my_project, open = FALSE)
 ```
 
-# Launch Docker
+## Launch Docker
 ```{r, eval=FALSE}
 # project_path <- "" # default
 project_path <- my_project

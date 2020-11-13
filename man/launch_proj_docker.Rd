@@ -8,11 +8,7 @@
 launch_proj_docker(
   project_path = ".",
   container = "thinkr/rstudio3_6_1_geo",
-  with_mysql = FALSE,
-  mysql_docker = "mysql:8.0.16",
-  with_chrome = FALSE,
-  chrome_docker = "tkp1n/chromium",
-  chrome_path = pagedown::find_chrome(),
+  network_name = "r-db",
   port = 8787,
   renv_inst = FALSE,
   renv_cache = FALSE,
@@ -24,9 +20,9 @@ launch_proj_docker(
 
 stop_proj_docker(
   project_path,
-  with_mysql = FALSE,
-  with_chrome = FALSE,
-  sleep = 10
+  sleep = 10,
+  network_name = "r-db",
+  stop_network = TRUE
 )
 }
 \arguments{
@@ -34,16 +30,8 @@ stop_proj_docker(
 
 \item{container}{Docker container to download from docker hub.}
 
-\item{with_mysql}{Logical. Use MySQL database or not.}
-
-\item{mysql_docker}{Mysql docker container to download from docker hub.}
-
-\item{with_chrome}{Logical. Use Chrome in the network or not.}
-
-\item{chrome_docker}{Chrome docker container to download from docker hub.}
-
-\item{chrome_path}{Path to local chromium installation.
-Help with \code{\link[pagedown:find_chrome]{pagedown::find_chrome()}}, but use the real path, not a symlink}
+\item{network_name}{Character. Give the name of the network in which the
+container will be included using \code{--net network_name}.}
 
 \item{port}{Local port to which to launch Rstudio Server}
 
@@ -62,6 +50,8 @@ in the parent directory of "project_path"}
 Can be useful if you want to simulate your CI behaviour in the Terminal using "\code{sudo R}".}
 
 \item{sleep}{Numeric. Number of seconds to wait for user to correctly stop Rstudio Server}
+
+\item{stop_network}{Logical. Whether to stop Docker network.}
 }
 \description{
 Launch and stop Docker
@@ -82,8 +72,7 @@ usethis::create_package(project_path, open = FALSE)
 
 # Which Rstudio container ? ----
 container <- c("thinkr/rstudio3_5_2",
-               "thinkr/rstudio3_5_2_geo",
-               "thinkr/rstudio3_6_1_geo")[3]
+               "rocker/geospatial:4.0.1")[2]
 
 # Which port ? ----
 # _Useful if multiple Rstudio Server to launch

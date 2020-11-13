@@ -13,7 +13,6 @@ Description: Help develop a R project inside a Docker container.
 License: MIT + file LICENSE
 Imports: 
     future,
-    pagedown,
     stats,
     utils
 Suggests: 

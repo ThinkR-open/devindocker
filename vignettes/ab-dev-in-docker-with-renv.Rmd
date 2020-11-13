@@ -109,3 +109,13 @@ Hence,
   `Sys.setenv(RENV_PATHS_CACHE = "/opt/local/renv/cache")`
 - If cache *not* shared with host with option `renv_cache`, then de-activate cache otherwise packages will disappear at next Docker restart
 `renv::settings$use.cache(FALSE)`
+
+
+### Keep `"renv_instructions.Rmd"` up-to-date
+
+```{r}
+# Which path to your working directory / project
+project_path <- file.path(tempdir, "myproject")
+update_renv_help(project_path = project_path, overwrite = TRUE)
+```
+

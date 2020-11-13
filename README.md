@@ -47,7 +47,7 @@ cat("# my R file", file = file.path(project_path, "my-file.R"))
 
 Launch a Docker container with your directory inside. This should be a
 container with Rstudio server inside.  
-*Note that you start out of your project, which means you will have to
+*Note that you start outside your project, which means you will have to
 start a new RStudio project if this is your way of working.*  
 *Note that packages you install will not be kept after you stop the
 container, but RStudio preferences will.*
@@ -85,14 +85,14 @@ stop_proj_docker(project_path = project_path)
 ### Use {renv} inside Docker and keep installation of packages
 
 **Note that you need to launch your project with {devindocker} from
-outside this project. Never ever open it again locally (out of a Docker
+outside this project. Never ever open it again locally (outside a Docker
 container) if you want to avoid problems with bad and not compatible
 local {renv} setup. It is recommended to create a project dedicated to
 launch {devindocker} projects.**
 
 Launch a Docker container with your directory inside. This should be a
 container with RStudio Server inside.  
-*Note that you start out of your project, which means you will have to
+*Note that you start outside your project, which means you will have to
 start a new RStudio project if this is your way of working.*  
 *Note that packages you install will be kept after you stop the
 container, as well as RStudio preferences.*
@@ -137,18 +137,12 @@ Then, end the container.
 stop_proj_docker(project_path = project_path)
 ```
 
-*There is an implementation to allow connection with a local Docker
-container having a mysql database setup, which is experimental. It may
-require an RStudio container with databases system dependencies. See
-parameter `with_mysql`.*
+### Connect a container to a Docker network
 
-Find the last version of the instructions for {renv} use here as
-follows:
-
-``` r
-file <- system.file("renv/renv_instructions.Rmd", package = "devindocker")
-file.edit(file)
-```
+You can connect your container to a Docker network using parameter
+`network_name`.  
+See vignette for an example wih mysql: `vignette("ac-docker-network",
+package = "devindocker")`
 
 ## Install Docker on your OS
 

@@ -1,0 +1,129 @@
+---
+title: "Include the Docker container in a network"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ac-docker-network}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+```{r setup}
+library(devindocker)
+```
+
+To add a Docker container in a network where there is a database container for instance, you can use parameter `network_name`.
+
+## Connexion with a mysql container
+
+Here is an example on how to start a Docker container with a MySQL database inside a network named `r-db`.  
+_Note that your RStudio Container will then need additional system dependencies to be able to connect to the database. See examples in https://github.com/ColinFay/r-db._
+
+```{r}
+network_name <- "r-db"
+
+mysql_docker <- "mysql:8.0.16"
+path_to_persistant_db <- "~/my_mysql_db"
+
+# Databases container ----
+## Pull image
+system(paste("docker pull", mysql_docker))
+## Create persistant drive for db
+db_path <- normalizePath(path_to_persistant_db, mustWork = FALSE)
+if (!dir.exists(db_path)) {
+  dir.create(db_path)
+}
+## Create docker network
+system(paste("docker network create", network_name))
+## Start container
+future::future({
+  system(
+    paste0(
+      'docker run --net ', network_name,
+      ' --name mysql ',
+      ' -v ', db_path, ':/var/lib/mysql',
+      ' -e MYSQL_ROOT_PASSWORD=coucou -d ', mysql_docker,
+      ' --secure-file-priv=""',
+      ' --default-authentication-plugin=mysql_native_password',
+      ' && sleep 10',
+      ' && docker exec mysql mysql -uroot -pcoucou -e "create database mydb" &')
+  )
+})
+
+Sys.sleep(9)
+```
+
+Then, you can start the RStudio container (with database system dependencies) using {devindocker}
+
+```{r}
+tempdir <- tempdir()
+my_project <- normalizePath(file.path(tempdir, "myproject"), mustWork = FALSE)
+usethis::create_package(my_project, open = FALSE)
+```
+
+## Launch Docker
+```{r, eval=FALSE}
+# project_path <- "" # default
+project_path <- my_project
+
+# Which container with RStudio server? ----
+container <- "thinkr/rstudio3_6_1_geo"
+
+# Which port ? ----
+# _Useful if multiple Rstudio Server to launch
+port <- 8788
+
+# Start Docker project
+launch_proj_docker(project_path = project_path,
+                   network_name = network_name,
+                   container = container,
+                   port = port)
+```
+
+## Connect to database inside the container
+
+Inside the container, you can connect to your database using {DBI} or {dbplyr}.
+
+```r
+library(DBI)
+
+con <- DBI::dbConnect(
+  RMariaDB::MariaDB(), 
+  user = "root",
+  password = "coucou",
+  host = "mysql", 
+  db = "mydb"
+)
+
+
+dbListTables(con)
+dbWriteTable(con, "mtcars", mtcars)
+dbListTables(con)
+
+res <- dbSendQuery(con, "SELECT * FROM mtcars WHERE cyl = 4")
+dbFetch(res)
+```
+
+
+## Stop your db container
+
+```{r}
+system("docker kill mysql")
+system("docker rm mysql")
+```
+
+## Stop RStudio Docker container and the network
+
+```{r}
+# Stop Docker and network properly
+stop_proj_docker(project_path = project_path, sleep = 5,
+                 network_name = network_name, stop_network = TRUE)
+```
+

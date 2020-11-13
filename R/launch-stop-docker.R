@@ -2,12 +2,8 @@
 #'
 #' @param project_path Path to project to launch.
 #' @param container Docker container to download from docker hub.
-#' @param with_mysql Logical. Use MySQL database or not.
-#' @param mysql_docker Mysql docker container to download from docker hub.
-#' @param with_chrome Logical. Use Chrome in the network or not.
-#' @param chrome_docker Chrome docker container to download from docker hub.
-#' @param chrome_path Path to local chromium installation.
-#' Help with \code{\link[pagedown:find_chrome]{pagedown::find_chrome()}}, but use the real path, not a symlink
+#' @param network_name Character. Give the name of the network in which the
+#'  container will be included using \code{--net network_name}.
 #' @param port Local port to which to launch Rstudio Server
 #' @param renv_inst Logical. Whether to add a R script with {renv} instructions in the project.
 #' @param renv_cache Path to renv cache on your computer. Set to FALSE to not use renv.
@@ -35,8 +31,7 @@
 #'
 #' # Which Rstudio container ? ----
 #' container <- c("thinkr/rstudio3_5_2",
-#'                "thinkr/rstudio3_5_2_geo",
-#'                "thinkr/rstudio3_6_1_geo")[3]
+#'                "rocker/geospatial:4.0.1")[2]
 #'
 #' # Which port ? ----
 #' # _Useful if multiple Rstudio Server to launch
@@ -65,11 +60,7 @@
 
 launch_proj_docker <- function(project_path = ".",
                                container = "thinkr/rstudio3_6_1_geo",
-                               with_mysql = FALSE,
-                               mysql_docker = "mysql:8.0.16",
-                               with_chrome = FALSE,
-                               chrome_docker = "tkp1n/chromium",
-                               chrome_path = pagedown::find_chrome(),
+                               network_name = "r-db",
                                port = 8787,
                                renv_inst = FALSE,
                                renv_cache = FALSE,
@@ -109,8 +100,7 @@ launch_proj_docker <- function(project_path = ".",
   # Files to ignore
   lines <- stats::na.omit(
     c("rstudio_dotrstudio", "rstudio_dotconfig",
-      ifelse(renv_inst, "renv_instructions.Rmd", NA),
-      ifelse(with_mysql, "database", NA)
+      ifelse(renv_inst, "renv_instructions.Rmd", NA)
     )
   )
 
@@ -128,11 +118,11 @@ launch_proj_docker <- function(project_path = ".",
 
   # .Rbuildignore
   # Files to ignore
-  lines <- stats::na.omit(c("rstudio\\_dotconfig",
-                            "rstudio\\_dotrstudio",
-                            ifelse(renv_inst, "renv\\_instructions\\.Rmd", NA),
-                            ifelse(with_mysql, "database", NA)
-  ))
+  lines <- stats::na.omit(
+    c("rstudio\\_dotconfig",
+      "rstudio\\_dotrstudio",
+      ifelse(renv_inst, "renv\\_instructions\\.Rmd", NA)
+    ))
 
   buildfile <- normalizePath(file.path(project_path, ".Rbuildignore"), mustWork = FALSE)
   if (!file.exists(buildfile)) {
@@ -156,68 +146,6 @@ launch_proj_docker <- function(project_path = ".",
   # library(future)
   # Requires at least 2 workers otherwise does not work
   future::plan(future::multisession(workers = 2))
-
-  # Databases container ----
-  if (isTRUE(with_mysql)) {
-    if (isTRUE(update_docker)) {
-      system(paste("docker pull", mysql_docker))
-    }
-
-    path <- normalizePath(file.path(project_path, "database"), mustWork = FALSE)
-    if (!dir.exists(path)) {
-      dir.create(path)
-    }
-
-    system("docker network create r-db")
-
-    future::future({
-      system(
-        paste0(
-          'docker run --net r-db',
-          ' --name mysql ',
-          ' -v ', normalizePath(file.path(project_path, "database"), mustWork = TRUE), ':/var/lib/mysql',
-          ' -e MYSQL_ROOT_PASSWORD=coucou -d ', mysql_docker,
-          ' --secure-file-priv=""',
-          ' --default-authentication-plugin=mysql_native_password',
-          ' && sleep 10',
-          ' && docker exec mysql mysql -uroot -pcoucou -e "create database mydb" &')
-      )
-    })
-  }
-
-  # Chromium container ----
-  if (FALSE) {
-    if (isTRUE(with_chrome)) {
-      if (isTRUE(update_docker)) {
-        system("docker pull microbox/chromium-headless")
-      }
-
-      if (!isTRUE(with_mysql)) {
-        # Otherwise already started
-        system("docker network create r-db")
-      }
-
-      # future::future({
-      #   system(
-      #     paste0(
-      #       'docker run --net r-db',
-      #       ' --name chrome -d ', mysql_docker)
-      #   )
-      # })
-
-      future::future({
-        system(
-          paste0(
-            'docker run',
-            ' --security-opt seccomp=', system.file("seccomp/chromium.json", package = "devindocker"),
-            ' -v `pwd`/node-ci-demo:/app',
-            ' tkp1n/chromium')
-        )
-      })
-
-
-    }
-  }
 
   ## Launch ----
   projectname <- basename(project_path)
@@ -247,13 +175,18 @@ launch_proj_docker <- function(project_path = ".",
   #   }
   # }
 
+  ## Create docker network
+  try(system(paste("docker network create", network_name)))
 
   ## Launch the server in the new R session (terminal have to be active...)
   future::future({
     system(
       paste0(
         "docker run --name ", projectname,
-        ifelse(isTRUE(with_mysql), " --net r-db", ""),
+        # network
+        # ifelse(isTRUE(with_mysql), " --net r-db", ""),
+        " --net ", network_name,
+        # root permission
         ifelse(isTRUE(is_root), " -e ROOT=TRUE", ""),
         " -d -e DISABLE_AUTH=true",
         # {renv}
@@ -263,9 +196,6 @@ launch_proj_docker <- function(project_path = ".",
         # _Project renv library
         ifelse(isTRUE(renv_out), paste0(" -e RENV_PATHS_LIBRARY_ROOT=", RENV_PATHS_LIBRARY_ROOT_CONTAINER), ""),
         ifelse(isTRUE(renv_out), paste0(" -v ", RENV_PATHS_LIBRARY_ROOT_HOST, ":", RENV_PATHS_LIBRARY_ROOT_CONTAINER), ""),
-
-        # Chrome
-        ifelse(isTRUE(with_chrome), paste0(" -v ", chrome_path, ":/opt/local/chromium"), ""),
 
         # Rstudio server
         " -v ", project_path, ":/home/rstudio/", projectname,
@@ -302,11 +232,12 @@ update_renv_help <- function(project_path = "", overwrite = TRUE) {
 #' Stop running Docker container
 #'
 #' @param sleep Numeric. Number of seconds to wait for user to correctly stop Rstudio Server
+#' @param stop_network Logical. Whether to stop Docker network.
 #'
 #' @export
 #' @rdname launch_proj_docker
 
-stop_proj_docker <- function(project_path, with_mysql = FALSE, with_chrome = FALSE, sleep = 10) {
+stop_proj_docker <- function(project_path, sleep = 10, network_name = "r-db", stop_network = TRUE) {
 
   projectname <- basename(project_path)
 
@@ -317,41 +248,10 @@ stop_proj_docker <- function(project_path, with_mysql = FALSE, with_chrome = FAL
 
   Sys.sleep(sleep)
 
-  ## To stop your image after your work proprely
-  if (isTRUE(with_mysql)) {
-    system("docker kill mysql")
-    system("docker rm mysql")
-  }
-  if (FALSE) {
-    if (isTRUE(with_chrome)) {
-      system("docker kill chrome")
-      system("docker rm chrome")
-    }
-  }
   system(paste("docker kill", projectname))
   system(paste("docker rm", projectname))
 
-  if (isTRUE(with_mysql)) {
-    system("docker network remove r-db")
+  if (isTRUE(stop_network)) {
+    try(system(paste("docker network remove", network_name)))
   }
-  ## If needed INSIDE the Docker Rstudio Server ----
-  ### _You will need to set the credentials
-  # git config credential.helper store
-  # _and your name
-  # usethis::use_git_config(scope = "project", user.name = "", user.email = "@thinkr.fr")
-  ## Template git
-  # git2r::config(global = FALSE, commit.template = "config_git/template_commit")
-
-  ## To install new packages used
-  # remotes::install_github("ThinkR-open/attachment")
-  # pkgs <- attachment::att_from_description()
-  # attachment::install_if_missing(pkgs)
-  # renv::restore()
-
-  # If you installed package from github or forced one CRAN
-  # you may have to be sure to install dependencies from MRAN
-  # ll <- list.files("library")
-  # for (l in ll) {
-  #   try(remotes::install_version(l))
-  # }
 }
