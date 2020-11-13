@@ -15,6 +15,11 @@ usethis::use_github_action_check_standard()
 usethis::use_github_action("pkgdown")
 pkgdown::build_site()
 usethis::use_news_md()
+usethis::use_package_doc()
+
+# Tests
+usethis::use_testthat()
+usethis::use_test("launch_proj_docker")
 
 # Dev
 attachment::att_amend_desc()

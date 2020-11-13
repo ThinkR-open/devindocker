@@ -7,6 +7,12 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<script type="text/javascript">
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -19,12 +25,12 @@ knitr::opts_chunk$set(
 library(devindocker)
 ```
 
-To add a Docker container in a network where there is a database container for instance, you can use parameter `network_name`.
+To add a Docker container in a network where there is a database container for instance, you can use parameter `network_name` in function `launch_proj_docker()`.
 
 ## Connexion with a mysql container
 
 Here is an example on how to start a Docker container with a MySQL database inside a network named `r-db`.  
-_Note that your RStudio Container will then need additional system dependencies to be able to connect to the database. See examples in https://github.com/ColinFay/r-db._
+*Note that your RStudio Container will then need additional system dependencies to be able to connect to the database. See examples in https://github.com/ColinFay/r-db .*
 
 ```{r}
 network_name <- "r-db"

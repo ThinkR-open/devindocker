@@ -28,6 +28,8 @@ You can install the development version from
 ``` r
 # install.packages("remotes")
 remotes::install_github("ThinkR-open/devindocker")
+# Or with vignettes included
+remotes::install_github("ThinkR-open/devindocker", build_vignettes = TRUE)
 ```
 
 ## Usage
@@ -141,8 +143,8 @@ stop_proj_docker(project_path = project_path)
 
 You can connect your container to a Docker network using parameter
 `network_name`.  
-See vignette for an example wih mysql: `vignette("ac-docker-network",
-package = "devindocker")`
+See [vignette for an example wih mysql
+here](https://thinkr-open.github.io/devindocker/articles/ac-docker-network.html).
 
 ## Install Docker on your OS
 
