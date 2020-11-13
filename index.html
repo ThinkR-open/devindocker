@@ -134,7 +134,9 @@
 <p>You can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"ThinkR-open/devindocker"</span><span class="op">)</span></code></pre></div>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"ThinkR-open/devindocker"</span><span class="op">)</span>
+<span class="co"># Or with vignettes included</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"ThinkR-open/devindocker"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
@@ -216,7 +218,7 @@
 <h3 class="hasAnchor">
 <a href="#connect-a-container-to-a-docker-network" class="anchor"></a>Connect a container to a Docker network</h3>
 <p>You can connect your container to a Docker network using parameter <code>network_name</code>.<br>
-See vignette for an example wih mysql: <code><a href="articles/ac-docker-network.html">vignette("ac-docker-network", package = "devindocker")</a></code></p>
+See <a href="https://thinkr-open.github.io/devindocker/articles/ac-docker-network.html">vignette for an example wih mysql here</a>.</p>
 </div>
 </div>
 <div id="install-docker-on-your-os" class="section level2">

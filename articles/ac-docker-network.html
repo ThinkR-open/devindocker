@@ -127,14 +127,17 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<script type="text/javascript">
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">devindocker</span><span class="op">)</span></code></pre></div>
-<p>To add a Docker container in a network where there is a database container for instance, you can use parameter <code>network_name</code>.</p>
+<p>To add a Docker container in a network where there is a database container for instance, you can use parameter <code>network_name</code> in function <code><a href="../reference/launch_proj_docker.html">launch_proj_docker()</a></code>.</p>
 <div id="connexion-with-a-mysql-container" class="section level2">
 <h2 class="hasAnchor">
 <a href="#connexion-with-a-mysql-container" class="anchor"></a>Connexion with a mysql container</h2>
-<p>Here is an example on how to start a Docker container with a MySQL database inside a network named <code>r-db</code>.<br>
-_Note that your RStudio Container will then need additional system dependencies to be able to connect to the database. See examples in <a href="https://github.com/ColinFay/r-db._" class="uri">https://github.com/ColinFay/r-db._</a></p>
+<p>Here is an example on how to start a Docker container with a MySQL database inside a network named <code>r-db</code>.<br><em>Note that your RStudio Container will then need additional system dependencies to be able to connect to the database. See examples in <a href="https://github.com/ColinFay/r-db" class="uri">https://github.com/ColinFay/r-db</a> .</em></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">network_name</span> <span class="op">&lt;-</span> <span class="st">"r-db"</span>
 
