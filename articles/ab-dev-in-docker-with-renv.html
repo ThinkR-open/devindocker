@@ -84,6 +84,9 @@
     <li>
       <a href="../articles/ab-dev-in-docker-with-renv.html">Development in Docker with {renv}</a>
     </li>
+    <li>
+      <a href="../articles/ac-docker-network.html">Include the Docker container in a network</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -134,8 +137,8 @@
 <code class="sourceCode R"><span class="va">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">my_project</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="va">my_project</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpayBMZz/myproject/'</span>
-<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpayBMZz/myproject'</span>
+<span class="co">#&gt; ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpYWBedz/myproject/'</span>
+<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpYWBedz/myproject'</span>
 <span class="co">#&gt; ✔ Creating 'R/'</span>
 <span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span>
 <span class="co">#&gt; Package: myproject</span>
@@ -222,6 +225,15 @@ You can change it with parameters <code>renv_out = TRUE</code> to save these in 
 <li>If cache <em>not</em> shared with host with option <code>renv_cache</code>, then de-activate cache otherwise packages will disappear at next Docker restart <code>renv::settings$use.cache(FALSE)</code>
 </li>
 </ul>
+<div id="keep-renv_instructions-rmd-up-to-date" class="section level3">
+<h3 class="hasAnchor">
+<a href="#keep-renv_instructions-rmd-up-to-date" class="anchor"></a>Keep <code>"renv_instructions.Rmd"</code> up-to-date</h3>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Which path to your working directory / project</span>
+<span class="va">project_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/update_renv_help.html">update_renv_help</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">#&gt; [1] TRUE</span></code></pre></div>
+</div>
 </div>
 </div>
   </div>

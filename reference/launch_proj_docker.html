@@ -126,6 +126,9 @@ Stop running Docker container" />
     <li>
       <a href="../articles/ab-dev-in-docker-with-renv.html">Development in Docker with {renv}</a>
     </li>
+    <li>
+      <a href="../articles/ac-docker-network.html">Include the Docker container in a network</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -163,11 +166,7 @@ Stop running Docker container" />
     <pre class="usage"><span class='fu'>launch_proj_docker</span><span class='op'>(</span>
   project_path <span class='op'>=</span> <span class='st'>"."</span>,
   container <span class='op'>=</span> <span class='st'>"thinkr/rstudio3_6_1_geo"</span>,
-  with_mysql <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  mysql_docker <span class='op'>=</span> <span class='st'>"mysql:8.0.16"</span>,
-  with_chrome <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  chrome_docker <span class='op'>=</span> <span class='st'>"tkp1n/chromium"</span>,
-  chrome_path <span class='op'>=</span> <span class='fu'>pagedown</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/pagedown/man/find_chrome.html'>find_chrome</a></span><span class='op'>(</span><span class='op'>)</span>,
+  network_name <span class='op'>=</span> <span class='st'>"r-db"</span>,
   port <span class='op'>=</span> <span class='fl'>8787</span>,
   renv_inst <span class='op'>=</span> <span class='cn'>FALSE</span>,
   renv_cache <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -179,9 +178,9 @@ Stop running Docker container" />
 
 <span class='fu'>stop_proj_docker</span><span class='op'>(</span>
   <span class='va'>project_path</span>,
-  with_mysql <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  with_chrome <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  sleep <span class='op'>=</span> <span class='fl'>10</span>
+  sleep <span class='op'>=</span> <span class='fl'>10</span>,
+  network_name <span class='op'>=</span> <span class='st'>"r-db"</span>,
+  stop_network <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -196,25 +195,9 @@ Stop running Docker container" />
       <td><p>Docker container to download from docker hub.</p></td>
     </tr>
     <tr>
-      <th>with_mysql</th>
-      <td><p>Logical. Use MySQL database or not.</p></td>
-    </tr>
-    <tr>
-      <th>mysql_docker</th>
-      <td><p>Mysql docker container to download from docker hub.</p></td>
-    </tr>
-    <tr>
-      <th>with_chrome</th>
-      <td><p>Logical. Use Chrome in the network or not.</p></td>
-    </tr>
-    <tr>
-      <th>chrome_docker</th>
-      <td><p>Chrome docker container to download from docker hub.</p></td>
-    </tr>
-    <tr>
-      <th>chrome_path</th>
-      <td><p>Path to local chromium installation.
-Help with <code><a href='https://rdrr.io/pkg/pagedown/man/find_chrome.html'>pagedown::find_chrome()</a></code>, but use the real path, not a symlink</p></td>
+      <th>network_name</th>
+      <td><p>Character. Give the name of the network in which the
+container will be included using <code>--net network_name</code>.</p></td>
     </tr>
     <tr>
       <th>port</th>
@@ -250,6 +233,10 @@ Can be useful if you want to simulate your CI behaviour in the Terminal using "<
       <th>sleep</th>
       <td><p>Numeric. Number of seconds to wait for user to correctly stop Rstudio Server</p></td>
     </tr>
+    <tr>
+      <th>stop_network</th>
+      <td><p>Logical. Whether to stop Docker network.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -267,8 +254,7 @@ during package checks. See <code>vignette("packages", package = "renv")</code>.<
 
 <span class='co'># Which Rstudio container ? ----</span>
 <span class='va'>container</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"thinkr/rstudio3_5_2"</span>,
-               <span class='st'>"thinkr/rstudio3_5_2_geo"</span>,
-               <span class='st'>"thinkr/rstudio3_6_1_geo"</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>3</span><span class='op'>]</span>
+               <span class='st'>"rocker/geospatial:4.0.1"</span><span class='op'>)</span><span class='op'>[</span><span class='fl'>2</span><span class='op'>]</span>
 
 <span class='co'># Which port ? ----</span>
 <span class='co'># _Useful if multiple Rstudio Server to launch</span>

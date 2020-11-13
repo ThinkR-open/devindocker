@@ -84,6 +84,9 @@
     <li>
       <a href="articles/ab-dev-in-docker-with-renv.html">Development in Docker with {renv}</a>
     </li>
+    <li>
+      <a href="articles/ac-docker-network.html">Include the Docker container in a network</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -147,7 +150,7 @@
 <div id="work-in-a-docker-environment" class="section level3">
 <h3 class="hasAnchor">
 <a href="#work-in-a-docker-environment" class="anchor"></a>Work in a Docker environment</h3>
-<p>Launch a Docker container with your directory inside. This should be a container with Rstudio server inside.<br><em>Note that you start out of your project, which means you will have to start a new RStudio project if this is your way of working.</em><br><em>Note that packages you install will not be kept after you stop the container, but RStudio preferences will.</em></p>
+<p>Launch a Docker container with your directory inside. This should be a container with Rstudio server inside.<br><em>Note that you start outside your project, which means you will have to start a new RStudio project if this is your way of working.</em><br><em>Note that packages you install will not be kept after you stop the container, but RStudio preferences will.</em></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">devindocker</span><span class="op">)</span>
 <span class="co"># Which path to your working directory / project</span>
@@ -175,8 +178,8 @@
 <div id="use-renv-inside-docker-and-keep-installation-of-packages" class="section level3">
 <h3 class="hasAnchor">
 <a href="#use-renv-inside-docker-and-keep-installation-of-packages" class="anchor"></a>Use {renv} inside Docker and keep installation of packages</h3>
-<p><strong>Note that you need to launch your project with {devindocker} from outside this project. Never ever open it again locally (out of a Docker container) if you want to avoid problems with bad and not compatible local {renv} setup. It is recommended to create a project dedicated to launch {devindocker} projects.</strong></p>
-<p>Launch a Docker container with your directory inside. This should be a container with RStudio Server inside.<br><em>Note that you start out of your project, which means you will have to start a new RStudio project if this is your way of working.</em><br><em>Note that packages you install will be kept after you stop the container, as well as RStudio preferences.</em></p>
+<p><strong>Note that you need to launch your project with {devindocker} from outside this project. Never ever open it again locally (outside a Docker container) if you want to avoid problems with bad and not compatible local {renv} setup. It is recommended to create a project dedicated to launch {devindocker} projects.</strong></p>
+<p>Launch a Docker container with your directory inside. This should be a container with RStudio Server inside.<br><em>Note that you start outside your project, which means you will have to start a new RStudio project if this is your way of working.</em><br><em>Note that packages you install will be kept after you stop the container, as well as RStudio preferences.</em></p>
 <p><strong>Follow instructions in the <code>"renv_instructions.Rmd"</code> file that is created inside your project.</strong></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Which path to your working directory / project</span>
@@ -208,11 +211,12 @@
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Stop Docker properly</span>
 <span class="fu"><a href="reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span><span class="op">)</span></code></pre></div>
-<p><em>There is an implementation to allow connection with a local Docker container having a mysql database setup, which is experimental. It may require an RStudio container with databases system dependencies. See parameter <code>with_mysql</code>.</em></p>
-<p>Find the last version of the instructions for {renv} use here as follows:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"renv/renv_instructions.Rmd"</span>, package <span class="op">=</span> <span class="st">"devindocker"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html">file.edit</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="connect-a-container-to-a-docker-network" class="section level3">
+<h3 class="hasAnchor">
+<a href="#connect-a-container-to-a-docker-network" class="anchor"></a>Connect a container to a Docker network</h3>
+<p>You can connect your container to a Docker network using parameter <code>network_name</code>.<br>
+See vignette for an example wih mysql: <code><a href="articles/ac-docker-network.html">vignette("ac-docker-network", package = "devindocker")</a></code></p>
 </div>
 </div>
 <div id="install-docker-on-your-os" class="section level2">
