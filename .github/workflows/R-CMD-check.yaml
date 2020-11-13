@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - master
+      - test-ci
   pull_request:
     branches:
       - master

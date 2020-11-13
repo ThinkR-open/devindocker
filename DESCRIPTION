@@ -16,15 +16,15 @@ Imports:
     stats,
     utils
 Suggests: 
+    httr,
     knitr,
     rmarkdown,
-    usethis,
-    testthat
+    testthat,
+    usethis
 VignetteBuilder: 
     knitr
-SystemRequirements: 
-    Docker
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+SystemRequirements: Docker
