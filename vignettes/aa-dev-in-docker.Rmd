@@ -34,8 +34,8 @@ usethis::create_package(my_project, open = FALSE)
 
 ## Launch Docker
 ```{r, eval=FALSE}
-# project_path <- "" # default
-project_path <- my_project
+# path <- "" # default
+path <- my_project
 
 # Which container with RStudio server? ----
 container <- "rocker/geospatial:4.0.1"
@@ -45,12 +45,12 @@ container <- "rocker/geospatial:4.0.1"
 port <- 8788
 
 # Start Docker project
-launch_proj_docker(project_path = project_path,
+launch_proj_docker(path = path,
                    container = container,
                    port = port)
 
 # Stop Docker properly
-stop_proj_docker(project_path = project_path, sleep = 5)
+stop_proj_docker(path = path, sleep = 5)
 ```
 
 

@@ -6,7 +6,7 @@
 \title{Launch and stop Docker}
 \usage{
 launch_proj_docker(
-  project_path = ".",
+  path = ".",
   container = "thinkr/rstudio3_6_1_geo",
   network_name = "r-db",
   port = 8787,
@@ -18,15 +18,10 @@ launch_proj_docker(
   is_root = FALSE
 )
 
-stop_proj_docker(
-  project_path,
-  sleep = 10,
-  network_name = "r-db",
-  stop_network = TRUE
-)
+stop_proj_docker(path, sleep = 10, network_name = "r-db", stop_network = TRUE)
 }
 \arguments{
-\item{project_path}{Path to project to launch.}
+\item{path}{Path to project or any directory to launch.}
 
 \item{container}{Docker container to download from docker hub.}
 
@@ -42,7 +37,7 @@ container will be included using \code{--net network_name}.}
 \item{renv_out}{Whether to set {renv} libraries out of the project.}
 
 \item{renv_out_dir}{Where to store project libraries. Default to a ".renv" folder
-in the parent directory of "project_path"}
+in the parent directory of "path"}
 
 \item{update_docker}{Logical. Whether to update Docker container with DockerHub.}
 
@@ -65,8 +60,8 @@ during package checks. See \code{vignette("packages", package = "renv")}.
 \examples{
 \dontrun{
 tempdir <- tempdir()
-project_path <- file.path(tempdir, "myproject")
-usethis::create_package(project_path, open = FALSE)
+path <- file.path(tempdir, "myproject")
+usethis::create_package(path, open = FALSE)
 
 # Launch Docker
 
@@ -79,23 +74,23 @@ container <- c("thinkr/rstudio3_5_2",
 port <- 8788
 
 # Start Docker project
-launch_proj_docker(project_path = project_path,
+launch_proj_docker(path = path,
                    container = container,
                    port = port)
 
 # Stop Docker properly
-stop_proj_docker(project_path = project_path, sleep = 5)
+stop_proj_docker(path = path, sleep = 5)
 
 # With renv cache shared with host
 dir.create(file.path(tempdir, "cache"))
 tempcache <- file.path(tempdir, "cache")
 # Start Docker project
-launch_proj_docker(project_path = project_path,
+launch_proj_docker(path = path,
                    container = container,
                    port = port,
                    renv_cache = tempcache)
 
 # Stop Docker properly
-stop_proj_docker(project_path = project_path, sleep = 5)
+stop_proj_docker(path = path, sleep = 5)
 }
 }

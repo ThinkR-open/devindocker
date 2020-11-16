@@ -48,7 +48,7 @@ You will need to set up {renv} the first time you launch the Docker container.
 
 ```{r, eval=FALSE}
 # Which path to your working directory / project
-project_path <- file.path(tempdir, "myproject")
+path <- file.path(tempdir, "myproject")
 
 # Which container (with Rstudio inside) ? ----
 # https://hub.docker.com/r/rocker/verse
@@ -64,7 +64,7 @@ renv_cache <- "~/renv_cache"
 
 # Start Docker project ----
 devindocker::launch_proj_docker(
-  project_path = project_path,
+  path = path,
   container = container,
   port = port,
   renv_cache = renv_cache,
@@ -80,7 +80,7 @@ When you're done, do not forget to stop properly the Rstudio Server: Click on To
 Then, stop the container.
 ```{r, eval=FALSE}
 # Stop Docker properly
-stop_proj_docker(project_path = project_path)
+stop_proj_docker(path = path)
 ```
 
 ### {renv} and its different storage directories
@@ -91,7 +91,7 @@ First one is for the project, second one is for your computer:
 - `".renv"` directory for the project is by default inside the project directory itself.
 This has some consequences when your project is a package during `check()` because it is copied in the temporary directory of the `check()`.
 A big project library may take some time and some place in your Docker container.
-  + Using {devindocker}, these project specific packages are stored locally in your `project_path` directory by default, which is the default {renv} behaviour. 
+  + Using {devindocker}, these project specific packages are stored locally in your `path` directory by default, which is the default {renv} behaviour. 
 Indeed, if you use global cache (with `renv_cache`), only symlinks are stored in these directory.  
 You can change it with parameters `renv_out = TRUE` to save these in a folder called `".renv"`, in the parent directory of your project `renv_out_dir`. 
 All project stored in the same parent directory will share this local `".renv"` library, using a specific folder inside.
@@ -121,7 +121,7 @@ Hence,
 
 ```{r}
 # Which path to your working directory / project
-project_path <- file.path(tempdir, "myproject")
-update_renv_help(project_path = project_path, overwrite = TRUE)
+path <- file.path(tempdir, "myproject")
+update_renv_help(path = path, overwrite = TRUE)
 ```
 

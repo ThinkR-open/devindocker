@@ -15,7 +15,7 @@ test_that("launch_proj_docker and stop work", {
   # skip_on_cran()
 
   # Start Docker project
-  output <- launch_proj_docker(project_path = my_project,
+  output <- launch_proj_docker(path = my_project,
                      container = container,
                      port = port)
 
@@ -27,7 +27,7 @@ test_that("launch_proj_docker and stop work", {
   expect_true(dir.exists(file.path(my_project, "rstudio_dotconfig")))
 
   # Stop Docker properly
-  stop_proj_docker(project_path = my_project, sleep = 5)
+  stop_proj_docker(path = my_project, sleep = 5)
   # RStudio server has stopped
   expect_error(httr::GET(paste0(url = "http://127.0.0.1:", port)))
   # RStudio config files still exist

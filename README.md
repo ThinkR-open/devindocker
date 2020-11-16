@@ -39,10 +39,10 @@ Let us create a random directory with a file inside.
 ``` r
 # Temporary project
 tempdir <- tempdir()
-project_path <- file.path(tempdir, "myproject")
-dir.create(project_path)
+path <- file.path(tempdir, "myproject")
+dir.create(path)
 # Add a file inside
-cat("# my R file", file = file.path(project_path, "my-file.R"))
+cat("# my R file", file = file.path(path, "my-file.R"))
 ```
 
 ### Work in a Docker environment
@@ -57,7 +57,7 @@ container, but RStudio preferences will.*
 ``` r
 library(devindocker)
 # Which path to your working directory / project
-project_path <- file.path(tempdir, "myproject")
+path <- file.path(tempdir, "myproject")
 
 # Which container (with Rstudio inside) ? ----
 # https://hub.docker.com/r/rocker/verse
@@ -69,7 +69,7 @@ port <- 8788
 
 # Start Docker project ----
 launch_proj_docker(
-  project_path = project_path,
+  path = path,
   container = container,
   port = port)
 ```
@@ -81,7 +81,7 @@ Then, end the container.
 
 ``` r
 # Stop Docker properly
-stop_proj_docker(project_path = project_path)
+stop_proj_docker(path = path)
 ```
 
 ### Use {renv} inside Docker and keep installation of packages
@@ -104,7 +104,7 @@ created inside your project.**
 
 ``` r
 # Which path to your working directory / project
-project_path <- file.path(tempdir, "myproject")
+path <- file.path(tempdir, "myproject")
 
 # Which container (with Rstudio inside) ? ----
 # https://hub.docker.com/r/rocker/verse
@@ -120,7 +120,7 @@ renv_cache <- "~/renv_cache"
 
 # Start Docker project ----
 devindocker::launch_proj_docker(
-  project_path = project_path,
+  path = path,
   container = container,
   port = port,
   renv_cache = renv_cache,
@@ -136,7 +136,7 @@ Then, end the container.
 
 ``` r
 # Stop Docker properly
-stop_proj_docker(project_path = project_path)
+stop_proj_docker(path = path)
 ```
 
 ### Connect a container to a Docker network

@@ -1,6 +1,6 @@
 #' Launch and stop Docker
 #'
-#' @param project_path Path to project to launch.
+#' @param path Path to project or any directory to launch.
 #' @param container Docker container to download from docker hub.
 #' @param network_name Character. Give the name of the network in which the
 #'  container will be included using \code{--net network_name}.
@@ -9,7 +9,7 @@
 #' @param renv_cache Path to renv cache on your computer. Set to FALSE to not use renv.
 #' @param renv_out Whether to set {renv} libraries out of the project.
 #' @param renv_out_dir Where to store project libraries. Default to a ".renv" folder
-#' in the parent directory of "project_path"
+#' in the parent directory of "path"
 #' @param update_docker Logical. Whether to update Docker container with DockerHub.
 #' @param is_root logical. Whether the Docker user has root permissions (add to sudoers).
 #' Can be useful if you want to simulate your CI behaviour in the Terminal using "\code{sudo R}".
@@ -24,8 +24,8 @@
 #' @examples
 #' \dontrun{
 #' tempdir <- tempdir()
-#' project_path <- file.path(tempdir, "myproject")
-#' usethis::create_package(project_path, open = FALSE)
+#' path <- file.path(tempdir, "myproject")
+#' usethis::create_package(path, open = FALSE)
 #'
 #' # Launch Docker
 #'
@@ -38,27 +38,27 @@
 #' port <- 8788
 #'
 #' # Start Docker project
-#' launch_proj_docker(project_path = project_path,
+#' launch_proj_docker(path = path,
 #'                    container = container,
 #'                    port = port)
 #'
 #' # Stop Docker properly
-#' stop_proj_docker(project_path = project_path, sleep = 5)
+#' stop_proj_docker(path = path, sleep = 5)
 #'
 #' # With renv cache shared with host
 #' dir.create(file.path(tempdir, "cache"))
 #' tempcache <- file.path(tempdir, "cache")
 #' # Start Docker project
-#' launch_proj_docker(project_path = project_path,
+#' launch_proj_docker(path = path,
 #'                    container = container,
 #'                    port = port,
 #'                    renv_cache = tempcache)
 #'
 #' # Stop Docker properly
-#' stop_proj_docker(project_path = project_path, sleep = 5)
+#' stop_proj_docker(path = path, sleep = 5)
 #' }
 
-launch_proj_docker <- function(project_path = ".",
+launch_proj_docker <- function(path = ".",
                                container = "thinkr/rstudio3_6_1_geo",
                                network_name = "r-db",
                                port = 8787,
@@ -72,26 +72,26 @@ launch_proj_docker <- function(project_path = ".",
 ) {
   # @param vbox Logical. If Docker run on windows in a virtual box, paths need to be changed
 
-  project_path <- normalizePath(project_path)
+  path <- normalizePath(path)
 
   if (missing(renv_cache) | renv_cache == FALSE) {
     renv_cache <- NULL
   }
 
   # First time ----
-  if (!dir.exists(file.path(project_path, "rstudio_dotrstudio"))) {
+  if (!dir.exists(file.path(path, "rstudio_dotrstudio"))) {
     # Hide this file
     # rstudio last files and others
-    dir.create(normalizePath(file.path(project_path, "rstudio_dotrstudio"), mustWork = FALSE))
+    dir.create(normalizePath(file.path(path, "rstudio_dotrstudio"), mustWork = FALSE))
   }
-  if (!dir.exists(file.path(project_path, "rstudio_dotconfig"))) {
+  if (!dir.exists(file.path(path, "rstudio_dotconfig"))) {
     # Hide this file
     # rstudio appearance preferences
-    dir.create(normalizePath(file.path(project_path, "rstudio_dotconfig"), mustWork = FALSE))
+    dir.create(normalizePath(file.path(path, "rstudio_dotconfig"), mustWork = FALSE))
   }
   if (isTRUE(renv_out)) {
     if (missing(renv_out_dir)) {
-      renv_out_dir <- normalizePath(file.path(dirname(project_path), ".renv"), mustWork = FALSE)
+      renv_out_dir <- normalizePath(file.path(dirname(path), ".renv"), mustWork = FALSE)
     }
     if (!dir.exists(renv_out_dir)) {dir.create(renv_out_dir)}
   }
@@ -104,7 +104,7 @@ launch_proj_docker <- function(project_path = ".",
     )
   )
 
-  gitfile <- normalizePath(file.path(project_path, ".gitignore"), mustWork = FALSE)
+  gitfile <- normalizePath(file.path(path, ".gitignore"), mustWork = FALSE)
   if (!file.exists(gitfile)) {
     existing_lines <- ""
   } else {
@@ -124,7 +124,7 @@ launch_proj_docker <- function(project_path = ".",
       ifelse(renv_inst, "renv\\_instructions\\.Rmd", NA)
     ))
 
-  buildfile <- normalizePath(file.path(project_path, ".Rbuildignore"), mustWork = FALSE)
+  buildfile <- normalizePath(file.path(path, ".Rbuildignore"), mustWork = FALSE)
   if (!file.exists(buildfile)) {
     existing_lines <- ""
   } else {
@@ -148,7 +148,7 @@ launch_proj_docker <- function(project_path = ".",
   future::plan(future::multisession(workers = 2))
 
   ## Launch ----
-  projectname <- basename(project_path)
+  projectname <- basename(path)
 
   if (!is.null(renv_cache)) {
     # {renv} path in container
@@ -169,9 +169,9 @@ launch_proj_docker <- function(project_path = ".",
 
   # Problem windows with virtualbox
   # if (.Platform$OS.type == "windows" & isTRUE(vbox)) {
-  #   project_path <- normalizePath(project_path, winslash = "/", mustWork = FALSE)
-  #   if (grepl("^[A-Z]:", project_path)) {
-  #   project_path <- gsub("^([A-Z]):", "//\\1", project_path)
+  #   path <- normalizePath(path, winslash = "/", mustWork = FALSE)
+  #   if (grepl("^[A-Z]:", path)) {
+  #   path <- gsub("^([A-Z]):", "//\\1", path)
   #   }
   # }
 
@@ -198,17 +198,17 @@ launch_proj_docker <- function(project_path = ".",
         ifelse(isTRUE(renv_out), paste0(" -v ", RENV_PATHS_LIBRARY_ROOT_HOST, ":", RENV_PATHS_LIBRARY_ROOT_CONTAINER), ""),
 
         # Rstudio server
-        " -v ", project_path, ":/home/rstudio/", projectname,
-        " -v ", normalizePath(file.path(project_path, "rstudio_dotconfig"), mustWork = TRUE), ":/home/rstudio/.config", #/rstudio
-        " -v ", normalizePath(file.path(project_path, "rstudio_dotrstudio"), mustWork = TRUE), ":/home/rstudio/.rstudio",
+        " -v ", path, ":/home/rstudio/", projectname,
+        " -v ", normalizePath(file.path(path, "rstudio_dotconfig"), mustWork = TRUE), ":/home/rstudio/.config", #/rstudio
+        " -v ", normalizePath(file.path(path, "rstudio_dotrstudio"), mustWork = TRUE), ":/home/rstudio/.rstudio",
         " -p 127.0.0.1:", port, ":8787 ",
         container),
       intern = TRUE)
   })
 
   if (isTRUE(renv_inst)) {
-    if (!file.exists(file.path(project_path, "renv_instructions.Rmd"))) {
-      update_renv_help(project_path, overwrite = FALSE)
+    if (!file.exists(file.path(path, "renv_instructions.Rmd"))) {
+      update_renv_help(path, overwrite = FALSE)
     }
   }
   Sys.sleep(5)
@@ -217,14 +217,14 @@ launch_proj_docker <- function(project_path = ".",
 
 #' Update renv instructions with last version
 #'
-#' @param project_path Path where to save the renv_instructions.Rmd file
+#' @param path Path where to save the renv_instructions.Rmd file
 #' @param overwrite Whether to overwrite existing file
 #'
 #' @export
-update_renv_help <- function(project_path = "", overwrite = TRUE) {
+update_renv_help <- function(path = "", overwrite = TRUE) {
   file.copy(
     system.file("renv", "renv_instructions.Rmd", package = "devindocker"),
-    file.path(project_path, "renv_instructions.Rmd"),
+    file.path(path, "renv_instructions.Rmd"),
     overwrite = overwrite
   )
 }
@@ -237,9 +237,9 @@ update_renv_help <- function(project_path = "", overwrite = TRUE) {
 #' @export
 #' @rdname launch_proj_docker
 
-stop_proj_docker <- function(project_path, sleep = 10, network_name = "r-db", stop_network = TRUE) {
+stop_proj_docker <- function(path, sleep = 10, network_name = "r-db", stop_network = TRUE) {
 
-  projectname <- basename(project_path)
+  projectname <- basename(path)
 
   message("
   # --- /!\ Do not forget to stop properly the Rstudio Server /!\ --- #

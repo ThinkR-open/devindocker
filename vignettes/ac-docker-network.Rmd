@@ -76,8 +76,8 @@ usethis::create_package(my_project, open = FALSE)
 
 ## Launch Docker
 ```{r, eval=FALSE}
-# project_path <- "" # default
-project_path <- my_project
+# path <- "" # default
+path <- my_project
 
 # Which container with RStudio server? ----
 container <- "thinkr/rstudio3_6_1_geo"
@@ -87,7 +87,7 @@ container <- "thinkr/rstudio3_6_1_geo"
 port <- 8788
 
 # Start Docker project
-launch_proj_docker(project_path = project_path,
+launch_proj_docker(path = path,
                    network_name = network_name,
                    container = container,
                    port = port)
@@ -129,7 +129,7 @@ system("docker rm mysql")
 
 ```{r}
 # Stop Docker and network properly
-stop_proj_docker(project_path = project_path, sleep = 5,
+stop_proj_docker(path = path, sleep = 5,
                  network_name = network_name, stop_network = TRUE)
 ```
 

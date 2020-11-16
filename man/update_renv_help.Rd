@@ -4,10 +4,10 @@
 \alias{update_renv_help}
 \title{Update renv instructions with last version}
 \usage{
-update_renv_help(project_path = "", overwrite = TRUE)
+update_renv_help(path = "", overwrite = TRUE)
 }
 \arguments{
-\item{project_path}{Path where to save the renv_instructions.Rmd file}
+\item{path}{Path where to save the renv_instructions.Rmd file}
 
 \item{overwrite}{Whether to overwrite existing file}
 }
