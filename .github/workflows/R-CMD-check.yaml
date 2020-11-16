@@ -19,10 +19,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          # - {os: windows-latest, r: 'release', port: '8786'}
-          # - {os: macOS-latest, r: 'release', port: '8787'}
-          - {os: ubuntu-18.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest", port: '8787', url: 'http://127.0.0.1'}
-          # - {os: ubuntu-18.04, r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest", port: '8789'}
+          # - {os: windows-latest, r: 'release', port: '8786', url: 'http://127.0.0.1'}
+          # - {os: macOS-latest, r: 'release', port: '8787', url: 'localhost'}
+          - {os: ubuntu-18.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest", port: '8787', url: 'localhost'}
+          - {os: ubuntu-18.04, r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest", port: '8789', url: 'localhost'}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true

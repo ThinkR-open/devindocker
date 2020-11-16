@@ -17,7 +17,7 @@
 #'  `local` contains path to local computer.
 #'  `docker` contains path inside the docker container linked to local.
 #' @param open_url Logical. Whether to open container URL in browser on http://127.0.0.1:port
-#' @param url Localhost url. Default to http://127.0.0.1
+#' @param url Localhost url. Default to "http://127.0.0.1". "localhost" can be a good alternative.
 #'
 #' @importFrom utils browseURL
 #'

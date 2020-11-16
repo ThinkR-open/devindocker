@@ -20,21 +20,7 @@ test_that("launch_proj_docker and stop work", {
                      open_url = FALSE)
 
   # RStudio server has started
-  a <- tryCatch(get_html <- httr::GET(url = paste0(url, ":", port)),
-                error = function(e) e)
-  print(paste("127.0.0.1:", a))
-  a <- tryCatch(get_html <- httr::GET(url = paste0("http://192.168.160.2:", port)),
-                error = function(e) e)
-  print(paste("192.168.160.2:", a))
-  a <- tryCatch(get_html <- httr::GET(url = paste0("http://localhost:", port)),
-                error = function(e) e)
-  print(paste("localhost:", a))
-  a <- tryCatch(
-    get_html <- httr::GET(url = paste0("http://", host.docker.internal, ":", port)),
-    error = function(e) e)
-  print(paste("host.docker.internal:", a))
-
-
+  get_html <- httr::GET(url = paste0(url, ":", port))
   expect_equal(get_html$status_code, 200)
   # RStudio config files exist
   expect_true(dir.exists(file.path(my_project, "rstudio_dotrstudio")))
@@ -43,7 +29,7 @@ test_that("launch_proj_docker and stop work", {
   # Stop Docker properly
   stop_proj_docker(path = my_project, sleep = 5)
   # RStudio server has stopped
-  # expect_error(httr::GET(url = paste0("http://127.0.0.1:", port)))
+  expect_error(httr::GET(url = paste0(url, ":", port)))
   # RStudio config files still exist
   expect_true(dir.exists(file.path(my_project, "rstudio_dotrstudio")))
   expect_true(dir.exists(file.path(my_project, "rstudio_dotconfig")))
@@ -66,10 +52,11 @@ test_that("other volumes work", {
   output <- launch_proj_docker(path = my_project,
                                container = container,
                                port = port,
-                               volumes = volumes)
+                               volumes = volumes,
+                               open_url = FALSE)
 
   # RStudio server has started
-  # get_html <- httr::GET(url = paste0("http://127.0.0.1:", port))
+  get_html <- httr::GET(url = paste0(url, ":", port))
   # expect_equal(get_html$status_code, 200)
 
   # Add a file in the additional directory from inside the container
@@ -88,7 +75,7 @@ test_that("other volumes work", {
   # Stop Docker properly
   stop_proj_docker(path = my_project, sleep = 5)
   # RStudio server has stopped
-  # expect_error(httr::GET(url = paste0("http://127.0.0.1:", port)))
+  expect_error(httr::GET(url = paste0(url, ":", port)))
 })
 unlink(my_project, recursive = TRUE)
 unlink(volumes[1,"local"], recursive = TRUE)
@@ -103,15 +90,16 @@ test_that("not recommended dir name work", {
   # Start Docker project
   output <- launch_proj_docker(path = my_bad_project,
                                container = container,
-                               port = port)
+                               port = port,
+                               open_url = FALSE)
 
   # RStudio server has started
-  # get_html <- httr::GET(url = paste0("http://127.0.0.1:", port))
+  get_html <- httr::GET(url = paste0(url, ":", port))
   # expect_equal(get_html$status_code, 200)
 
   # Stop Docker properly
   stop_proj_docker(path = my_project, sleep = 5)
   # RStudio server has stopped
-  # expect_error(httr::GET(url = paste0("http://127.0.0.1:", port)))
+  expect_error(httr::GET(url = paste0(url, ":", port)))
 })
 unlink(my_bad_project, recursive = TRUE)

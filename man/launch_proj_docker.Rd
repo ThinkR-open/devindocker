@@ -53,7 +53,7 @@ Can be useful if you want to simulate your CI behaviour in the Terminal using "\
 
 \item{open_url}{Logical. Whether to open container URL in browser on http://127.0.0.1:port}
 
-\item{url}{Localhost url. Default to http://127.0.0.1}
+\item{url}{Localhost url. Default to "http://127.0.0.1". "localhost" can be a good alternative.}
 
 \item{sleep}{Numeric. Number of seconds to wait for user to correctly stop Rstudio Server}
 
