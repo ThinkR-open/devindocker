@@ -128,6 +128,9 @@
     <li>
       <a href="../articles/ac-docker-network.html">Include the Docker container in a network</a>
     </li>
+    <li>
+      <a href="../articles/ac-docker-volumes.html">Mount other volumes in the container</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -161,13 +164,13 @@
     <p>Update renv instructions with last version</p>
     </div>
 
-    <pre class="usage"><span class='fu'>update_renv_help</span><span class='op'>(</span>project_path <span class='op'>=</span> <span class='st'>""</span>, overwrite <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>update_renv_help</span><span class='op'>(</span>path <span class='op'>=</span> <span class='st'>""</span>, overwrite <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>project_path</th>
+      <th>path</th>
       <td><p>Path where to save the renv_instructions.Rmd file</p></td>
     </tr>
     <tr>

@@ -87,6 +87,9 @@
     <li>
       <a href="../articles/ac-docker-network.html">Include the Docker container in a network</a>
     </li>
+    <li>
+      <a href="../articles/ac-docker-volumes.html">Mount other volumes in the container</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -180,8 +183,8 @@ $(document).ready(function () {
 <h2 class="hasAnchor">
 <a href="#launch-docker" class="anchor"></a>Launch Docker</h2>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># project_path &lt;- "" # default</span>
-<span class="va">project_path</span> <span class="op">&lt;-</span> <span class="va">my_project</span>
+<code class="sourceCode R"><span class="co"># path &lt;- "" # default</span>
+<span class="va">path</span> <span class="op">&lt;-</span> <span class="va">my_project</span>
 
 <span class="co"># Which container with RStudio server? ----</span>
 <span class="va">container</span> <span class="op">&lt;-</span> <span class="st">"thinkr/rstudio3_6_1_geo"</span>
@@ -191,7 +194,7 @@ $(document).ready(function () {
 <span class="va">port</span> <span class="op">&lt;-</span> <span class="fl">8788</span>
 
 <span class="co"># Start Docker project</span>
-<span class="fu"><a href="../reference/launch_proj_docker.html">launch_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span>,
+<span class="fu"><a href="../reference/launch_proj_docker.html">launch_proj_docker</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>,
                    network_name <span class="op">=</span> <span class="va">network_name</span>,
                    container <span class="op">=</span> <span class="va">container</span>,
                    port <span class="op">=</span> <span class="va">port</span><span class="op">)</span></code></pre></div>
@@ -231,7 +234,7 @@ $(document).ready(function () {
 <a href="#stop-rstudio-docker-container-and-the-network" class="anchor"></a>Stop RStudio Docker container and the network</h2>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Stop Docker and network properly</span>
-<span class="fu"><a href="../reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span>, sleep <span class="op">=</span> <span class="fl">5</span>,
+<span class="fu"><a href="../reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, sleep <span class="op">=</span> <span class="fl">5</span>,
                  network_name <span class="op">=</span> <span class="va">network_name</span>, stop_network <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
   </div>

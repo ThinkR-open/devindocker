@@ -87,6 +87,9 @@
     <li>
       <a href="articles/ac-docker-network.html">Include the Docker container in a network</a>
     </li>
+    <li>
+      <a href="articles/ac-docker-volumes.html">Mount other volumes in the container</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -145,10 +148,10 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Temporary project</span>
 <span class="va">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>
-<span class="va">project_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">project_path</span><span class="op">)</span>
+<span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">path</span><span class="op">)</span>
 <span class="co"># Add a file inside</span>
-<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"# my R file"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">project_path</span>, <span class="st">"my-file.R"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="st">"# my R file"</span>, file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">path</span>, <span class="st">"my-file.R"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div id="work-in-a-docker-environment" class="section level3">
 <h3 class="hasAnchor">
 <a href="#work-in-a-docker-environment" class="anchor"></a>Work in a Docker environment</h3>
@@ -156,7 +159,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">devindocker</span><span class="op">)</span>
 <span class="co"># Which path to your working directory / project</span>
-<span class="va">project_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
+<span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
 
 <span class="co"># Which container (with Rstudio inside) ? ----</span>
 <span class="co"># https://hub.docker.com/r/rocker/verse</span>
@@ -168,14 +171,14 @@
 
 <span class="co"># Start Docker project ----</span>
 <span class="fu"><a href="reference/launch_proj_docker.html">launch_proj_docker</a></span><span class="op">(</span>
-  project_path <span class="op">=</span> <span class="va">project_path</span>,
+  path <span class="op">=</span> <span class="va">path</span>,
   container <span class="op">=</span> <span class="va">container</span>,
   port <span class="op">=</span> <span class="va">port</span><span class="op">)</span></code></pre></div>
 <p>When you’re done, do not forget to stop properly the Rstudio Server: Click on Top right button to quit or <code><a href="https://rdrr.io/r/base/quit.html">q()</a></code> in the console.</p>
 <p>Then, end the container.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Stop Docker properly</span>
-<span class="fu"><a href="reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="use-renv-inside-docker-and-keep-installation-of-packages" class="section level3">
 <h3 class="hasAnchor">
@@ -185,7 +188,7 @@
 <p><strong>Follow instructions in the <code>"renv_instructions.Rmd"</code> file that is created inside your project.</strong></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Which path to your working directory / project</span>
-<span class="va">project_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
+<span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
 
 <span class="co"># Which container (with Rstudio inside) ? ----</span>
 <span class="co"># https://hub.docker.com/r/rocker/verse</span>
@@ -201,7 +204,7 @@
 
 <span class="co"># Start Docker project ----</span>
 <span class="fu">devindocker</span><span class="fu">::</span><span class="fu"><a href="reference/launch_proj_docker.html">launch_proj_docker</a></span><span class="op">(</span>
-  project_path <span class="op">=</span> <span class="va">project_path</span>,
+  path <span class="op">=</span> <span class="va">path</span>,
   container <span class="op">=</span> <span class="va">container</span>,
   port <span class="op">=</span> <span class="va">port</span>,
   renv_cache <span class="op">=</span> <span class="va">renv_cache</span>,
@@ -212,7 +215,7 @@
 <p>Then, end the container.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Stop Docker properly</span>
-<span class="fu"><a href="reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="connect-a-container-to-a-docker-network" class="section level3">
 <h3 class="hasAnchor">

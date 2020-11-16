@@ -87,6 +87,9 @@
     <li>
       <a href="../articles/ac-docker-network.html">Include the Docker container in a network</a>
     </li>
+    <li>
+      <a href="../articles/ac-docker-volumes.html">Mount other volumes in the container</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -141,8 +144,8 @@ $(document).ready(function () {
 <code class="sourceCode R"><span class="va">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">my_project</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="va">my_project</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpZNZzIB/myproject/'</span>
-<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpZNZzIB/myproject'</span>
+<span class="co">#&gt; ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpUtQbTH/myproject/'</span>
+<span class="co">#&gt; ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpUtQbTH/myproject'</span>
 <span class="co">#&gt; ✔ Creating 'R/'</span>
 <span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span>
 <span class="co">#&gt; Package: myproject</span>
@@ -168,7 +171,7 @@ $(document).ready(function () {
 <p>You will need to set up {renv} the first time you launch the Docker container. <strong>Follow instructions in the <code>"renv_instructions.Rmd"</code> file that is created inside your project.</strong></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Which path to your working directory / project</span>
-<span class="va">project_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
+<span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
 
 <span class="co"># Which container (with Rstudio inside) ? ----</span>
 <span class="co"># https://hub.docker.com/r/rocker/verse</span>
@@ -184,7 +187,7 @@ $(document).ready(function () {
 
 <span class="co"># Start Docker project ----</span>
 <span class="fu">devindocker</span><span class="fu">::</span><span class="fu"><a href="../reference/launch_proj_docker.html">launch_proj_docker</a></span><span class="op">(</span>
-  project_path <span class="op">=</span> <span class="va">project_path</span>,
+  path <span class="op">=</span> <span class="va">path</span>,
   container <span class="op">=</span> <span class="va">container</span>,
   port <span class="op">=</span> <span class="va">port</span>,
   renv_cache <span class="op">=</span> <span class="va">renv_cache</span>,
@@ -197,7 +200,7 @@ $(document).ready(function () {
 <p>Then, stop the container.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Stop Docker properly</span>
-<span class="fu"><a href="../reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="renv-and-its-different-storage-directories" class="section level3">
 <h3 class="hasAnchor">
@@ -207,7 +210,7 @@ $(document).ready(function () {
 <li>
 <code>".renv"</code> directory for the project is by default inside the project directory itself. This has some consequences when your project is a package during <code><a href="https://rdrr.io/r/utils/PkgUtils.html">check()</a></code> because it is copied in the temporary directory of the <code><a href="https://rdrr.io/r/utils/PkgUtils.html">check()</a></code>. A big project library may take some time and some place in your Docker container.
 <ul>
-<li>Using {devindocker}, these project specific packages are stored locally in your <code>project_path</code> directory by default, which is the default {renv} behaviour. Indeed, if you use global cache (with <code>renv_cache</code>), only symlinks are stored in these directory.<br>
+<li>Using {devindocker}, these project specific packages are stored locally in your <code>path</code> directory by default, which is the default {renv} behaviour. Indeed, if you use global cache (with <code>renv_cache</code>), only symlinks are stored in these directory.<br>
 You can change it with parameters <code>renv_out = TRUE</code> to save these in a folder called <code>".renv"</code>, in the parent directory of your project <code>renv_out_dir</code>. All project stored in the same parent directory will share this local <code>".renv"</code> library, using a specific folder inside. Inside the Docker container, the <code>".renv"</code> directory will be stored at the root of your RStudio server, in the Docker home directory. Show hidden files to se it.</li>
 </ul>
 </li>
@@ -234,8 +237,8 @@ You can change it with parameters <code>renv_out = TRUE</code> to save these in 
 <a href="#keep-renv_instructions-rmd-up-to-date" class="anchor"></a>Keep <code>"renv_instructions.Rmd"</code> up-to-date</h3>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Which path to your working directory / project</span>
-<span class="va">project_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
-<span class="fu"><a href="../reference/update_renv_help.html">update_renv_help</a></span><span class="op">(</span>project_path <span class="op">=</span> <span class="va">project_path</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/update_renv_help.html">update_renv_help</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt; [1] TRUE</span></code></pre></div>
 </div>
 </div>

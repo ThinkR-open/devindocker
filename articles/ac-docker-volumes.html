@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Development in Docker • devindocker</title>
+<title>Mount other volumes in the container • devindocker</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -18,7 +18,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Development in Docker">
+<script src="../pkgdown.js"></script><meta property="og:title" content="Mount other volumes in the container">
 <meta property="og:description" content="devindocker">
 <meta property="og:image" content="/logo.png">
 <meta name="twitter:card" content="summary">
@@ -116,17 +116,15 @@
 
       
 
-      </header><script src="aa-dev-in-docker_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="aa-dev-in-docker_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="aa-dev-in-docker_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="ac-docker-volumes_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="ac-docker-volumes_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="ac-docker-volumes_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Development in Docker</h1>
-                        <h4 class="author">Sébatsien Rochette</h4>
+      <h1 data-toc-skip>Mount other volumes in the container</h1>
             
-            <h4 class="date">2020-11-16</h4>
       
       
-      <div class="hidden name"><code>aa-dev-in-docker.Rmd</code></div>
+      <div class="hidden name"><code>ac-docker-volumes.Rmd</code></div>
 
     </div>
 
@@ -136,41 +134,44 @@
 $(document).ready(function () {
   window.initializeCodeFolding("show" === "show");
 });
-</script><div id="create-new-package" class="section level2">
+</script><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">devindocker</span><span class="op">)</span></code></pre></div>
+<p>If you want to mount other volumes inside the Docker container, you can use parameter <code>volumes</code>. This requires a data.frame with two columns named <code>local</code> and <code>docker</code>.</p>
+<ul>
+<li>
+<code>local</code> contains path to local computer</li>
+<li>
+<code>docker</code> contains path inside the docker container linked to local</li>
+</ul>
+<div id="create-directories-to-mount-in-the-docker" class="section level2">
 <h2 class="hasAnchor">
-<a href="#create-new-package" class="anchor"></a>Create new package</h2>
-<p>You can use {devindocker} for any directory, project or even package. In the end, these are all folders on your computer.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<a href="#create-directories-to-mount-in-the-docker" class="anchor"></a>Create directories to mount in the Docker</h2>
+<p>The main project directory will be directly accessible at the root of RStudio server inside the Docker. It is called in <code>path</code> parameter.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">my_project</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="va">my_project</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<pre><code>## ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpNAQHir/myproject/'</code></pre>
-<pre><code>## ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpNAQHir/myproject'</code></pre>
-<pre><code>## ✔ Creating 'R/'</code></pre>
-<pre><code>## ✔ Writing 'DESCRIPTION'</code></pre>
-<pre><code>## Package: myproject
-## Title: What the Package Does (One Line, Title Case)
-## Version: 0.0.0.9000
-## Authors@R (parsed):
-##     * First Last &lt;first.last@example.com&gt; [aut, cre] (YOUR-ORCID-ID)
-## Description: What the package does (one paragraph).
-## License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-##     license
-## Encoding: UTF-8
-## LazyData: true
-## Roxygen: list(markdown = TRUE)
-## RoxygenNote: 7.0.0</code></pre>
-<pre><code>## ✔ Writing 'NAMESPACE'</code></pre>
-<pre><code>## ✔ Setting active project to '&lt;no active project&gt;'</code></pre>
+<span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">my_project</span><span class="op">)</span></code></pre></div>
+<p>The following directory will be mounted inside the Docker container at a chosen place. In this example, we will link the additional directory inside RStudio home directory (aside the main project).</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">my_additional</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"my_additional"</span><span class="op">)</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">my_additional</span><span class="op">)</span>
+<span class="va">my_additional2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"my_additional2"</span><span class="op">)</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="va">my_additional2</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="launch-docker" class="section level2">
+<div id="create-the-table-of-correspondance-for-additional-volumes" class="section level2">
 <h2 class="hasAnchor">
-<a href="#launch-docker" class="anchor"></a>Launch Docker</h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># path &lt;- "" # default</span>
-<span class="va">path</span> <span class="op">&lt;-</span> <span class="va">my_project</span>
-
-<span class="co"># Which container with RStudio server? ----</span>
+<a href="#create-the-table-of-correspondance-for-additional-volumes" class="anchor"></a>Create the table of correspondance for additional volumes</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">volumes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>
+  local <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">my_additional</span>, <span class="va">my_additional2</span><span class="op">)</span>,
+  docker <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"/home/rstudio/my_additional"</span>, <span class="st">"/home/rstudio/my_additional2"</span><span class="op">)</span> 
+<span class="op">)</span></code></pre></div>
+</div>
+<div id="launch-docker-with-other-volumes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#launch-docker-with-other-volumes" class="anchor"></a>Launch Docker with other volumes</h2>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Which container with RStudio server? ----</span>
 <span class="va">container</span> <span class="op">&lt;-</span> <span class="st">"rocker/geospatial:4.0.1"</span>
 
 <span class="co"># Which port ? ----</span>
@@ -178,12 +179,13 @@ $(document).ready(function () {
 <span class="va">port</span> <span class="op">&lt;-</span> <span class="fl">8788</span>
 
 <span class="co"># Start Docker project</span>
-<span class="fu"><a href="../reference/launch_proj_docker.html">launch_proj_docker</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>,
+<span class="fu"><a href="../reference/launch_proj_docker.html">launch_proj_docker</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">my_project</span>,
                    container <span class="op">=</span> <span class="va">container</span>,
-                   port <span class="op">=</span> <span class="va">port</span><span class="op">)</span>
+                   port <span class="op">=</span> <span class="va">port</span>,
+                   volumes <span class="op">=</span> <span class="va">volumes</span><span class="op">)</span>
 
 <span class="co"># Stop Docker properly</span>
-<span class="fu"><a href="../reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">path</span>, sleep <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="../reference/launch_proj_docker.html">stop_proj_docker</a></span><span class="op">(</span>path <span class="op">=</span> <span class="va">my_project</span>, sleep <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></code></pre></div>
 </div>
   </div>
 
