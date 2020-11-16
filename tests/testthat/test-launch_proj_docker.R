@@ -6,9 +6,8 @@ usethis::create_package(my_project, open = FALSE)
 # Which container with RStudio server? ----
 container <- "rocker/geospatial:4.0.1"
 # Which port ? ----
-port <- 8788
-
-
+port <- Sys.getenv("PORT", unset = 8786)
+message("port used is: ", port)
 
 test_that("launch_proj_docker and stop work", {
   # skip_on_ci()
