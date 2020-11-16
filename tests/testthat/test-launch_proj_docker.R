@@ -20,10 +20,10 @@ test_that("launch_proj_docker and stop work", {
                      open_url = FALSE)
 
   # RStudio server has started
-  get_html <- httr::GET(url = paste0("http://127.0.0.1:", port))
-  get_html <- httr::GET(url = paste0("http://192.168.160.2:", port))
-  get_html <- httr::GET(url = paste0("http://localhost:", port))
-  get_html <- httr::GET(url = paste0("http://", host.docker.internal, ":", port))
+  try(get_html <- httr::GET(url = paste0("http://127.0.0.1:", port)))
+  try(get_html <- httr::GET(url = paste0("http://192.168.160.2:", port)))
+  try(get_html <- httr::GET(url = paste0("http://localhost:", port)))
+  try(get_html <- httr::GET(url = paste0("http://", host.docker.internal, ":", port)))
 
 
   expect_equal(get_html$status_code, 200)
