@@ -7,7 +7,7 @@ usethis::create_package(my_project, open = FALSE)
 container <- "rocker/geospatial:4.0.1"
 # Which port ? ----
 port <- Sys.getenv("PORT", unset = 8787)
-message("port used is: ", port)
+url <- Sys.getenv("URL", unset = "http://127.0.0.1")
 
 test_that("launch_proj_docker and stop work", {
   # skip_on_ci()
@@ -20,10 +20,19 @@ test_that("launch_proj_docker and stop work", {
                      open_url = FALSE)
 
   # RStudio server has started
-  try(get_html <- httr::GET(url = paste0("http://127.0.0.1:", port)))
-  try(get_html <- httr::GET(url = paste0("http://192.168.160.2:", port)))
-  try(get_html <- httr::GET(url = paste0("http://localhost:", port)))
-  try(get_html <- httr::GET(url = paste0("http://", host.docker.internal, ":", port)))
+  a <- tryCatch(get_html <- httr::GET(url = paste0(url, ":", port)),
+                error = function(e) e)
+  print(paste("127.0.0.1:", a))
+  a <- tryCatch(get_html <- httr::GET(url = paste0("http://192.168.160.2:", port)),
+                error = function(e) e)
+  print(paste("192.168.160.2:", a))
+  a <- tryCatch(get_html <- httr::GET(url = paste0("http://localhost:", port)),
+                error = function(e) e)
+  print(paste("localhost:", a))
+  a <- tryCatch(
+    get_html <- httr::GET(url = paste0("http://", host.docker.internal, ":", port)),
+    error = function(e) e)
+  print(paste("host.docker.internal:", a))
 
 
   expect_equal(get_html$status_code, 200)
