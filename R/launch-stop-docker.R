@@ -13,6 +13,9 @@
 #' @param update_docker Logical. Whether to update Docker container with DockerHub.
 #' @param is_root logical. Whether the Docker user has root permissions (add to sudoers).
 #' Can be useful if you want to simulate your CI behaviour in the Terminal using "\code{sudo R}".
+#' @param volumes data.frame with two columns named `local` and `docker`.
+#'  `local` contains path to local computer.
+#'  `docker` contains path inside the docker container linked to local.
 #'
 #' @importFrom utils browseURL
 #'
@@ -27,8 +30,6 @@
 #' path <- file.path(tempdir, "myproject")
 #' usethis::create_package(path, open = FALSE)
 #'
-#' # Launch Docker
-#'
 #' # Which Rstudio container ? ----
 #' container <- c("thinkr/rstudio3_5_2",
 #'                "rocker/geospatial:4.0.1")[2]
@@ -37,25 +38,27 @@
 #' # _Useful if multiple Rstudio Server to launch
 #' port <- 8788
 #'
-#' # Start Docker project
+#' # _Start Docker project
 #' launch_proj_docker(path = path,
 #'                    container = container,
 #'                    port = port)
 #'
-#' # Stop Docker properly
+#' # _Stop Docker properly
 #' stop_proj_docker(path = path, sleep = 5)
 #'
 #' # With renv cache shared with host
 #' dir.create(file.path(tempdir, "cache"))
 #' tempcache <- file.path(tempdir, "cache")
-#' # Start Docker project
+#' # _Start Docker project
 #' launch_proj_docker(path = path,
 #'                    container = container,
 #'                    port = port,
 #'                    renv_cache = tempcache)
 #'
-#' # Stop Docker properly
+#' # _Stop Docker properly
 #' stop_proj_docker(path = path, sleep = 5)
+#'
+#' # Mount with additional volumes
 #' }
 
 launch_proj_docker <- function(path = ".",
@@ -67,7 +70,8 @@ launch_proj_docker <- function(path = ".",
                                renv_out = FALSE,
                                renv_out_dir,
                                update_docker = TRUE,
-                               is_root = FALSE
+                               is_root = FALSE,
+                               volumes
                                # vbox = FALSE
 ) {
   # @param vbox Logical. If Docker run on windows in a virtual box, paths need to be changed
@@ -76,6 +80,21 @@ launch_proj_docker <- function(path = ".",
 
   if (missing(renv_cache) | renv_cache == FALSE) {
     renv_cache <- NULL
+  }
+
+  # addtional volumes
+  if (!missing(volumes)) {
+    if (!all(c("local", "docker") %in% names(volumes))) {
+      stop("To mount external volumes, use a data.frame with names: 'local' and 'docker'")
+    }
+    volumes[,"local"] <- normalizePath(volumes[,"local"])
+
+    add_volumes <- paste(
+      apply(volumes, 1, function(x) paste0(" -v '", x["local"], ":", x["docker"], "'")),
+      collapse = ""
+    )
+  } else {
+    add_volumes <- NULL
   }
 
   # First time ----
@@ -148,7 +167,8 @@ launch_proj_docker <- function(path = ".",
   future::plan(future::multisession(workers = 2))
 
   ## Launch ----
-  projectname <- basename(path)
+  dockername <- clean_project_name(basename(path))
+  projectname <- clean_dir_name(basename(path))
 
   if (!is.null(renv_cache)) {
     # {renv} path in container
@@ -182,7 +202,7 @@ launch_proj_docker <- function(path = ".",
   future::future({
     system(
       paste0(
-        "docker run --name ", projectname,
+        "docker run --name ", dockername,
         # network
         # ifelse(isTRUE(with_mysql), " --net r-db", ""),
         " --net ", network_name,
@@ -198,9 +218,13 @@ launch_proj_docker <- function(path = ".",
         ifelse(isTRUE(renv_out), paste0(" -v ", RENV_PATHS_LIBRARY_ROOT_HOST, ":", RENV_PATHS_LIBRARY_ROOT_CONTAINER), ""),
 
         # Rstudio server
-        " -v ", path, ":/home/rstudio/", projectname,
-        " -v ", normalizePath(file.path(path, "rstudio_dotconfig"), mustWork = TRUE), ":/home/rstudio/.config", #/rstudio
-        " -v ", normalizePath(file.path(path, "rstudio_dotrstudio"), mustWork = TRUE), ":/home/rstudio/.rstudio",
+        " -v '", path, ":/home/rstudio/", projectname, "'",
+        " -v '", normalizePath(file.path(path, "rstudio_dotconfig"), mustWork = TRUE), ":/home/rstudio/.config'", #/rstudio
+        " -v '", normalizePath(file.path(path, "rstudio_dotrstudio"), mustWork = TRUE), ":/home/rstudio/.rstudio'",
+
+        # Addtional volumes
+        ifelse(!is.null(add_volumes), add_volumes, ""),
+
         " -p 127.0.0.1:", port, ":8787 ",
         container),
       intern = TRUE)
@@ -239,7 +263,7 @@ update_renv_help <- function(path = "", overwrite = TRUE) {
 
 stop_proj_docker <- function(path, sleep = 10, network_name = "r-db", stop_network = TRUE) {
 
-  projectname <- basename(path)
+  dockername <- clean_project_name(basename(path))
 
   message("
   # --- /!\ Do not forget to stop properly the Rstudio Server /!\ --- #
@@ -248,10 +272,18 @@ stop_proj_docker <- function(path, sleep = 10, network_name = "r-db", stop_netwo
 
   Sys.sleep(sleep)
 
-  system(paste("docker kill", projectname))
-  system(paste("docker rm", projectname))
+  system(paste("docker kill", dockername))
+  system(paste("docker rm", dockername))
 
   if (isTRUE(stop_network)) {
     try(system(paste("docker network remove", network_name)))
   }
+}
+
+
+clean_project_name <- function(x) {
+  tolower(gsub(" ", "", x))
+}
+clean_dir_name <- function(x) {
+  gsub(" ", "\\", x)
 }

@@ -1,0 +1,82 @@
+---
+title: "Mount other volumes in the container"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ac-docker-volumes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<script type="text/javascript">
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = TRUE
+)
+```
+
+```{r setup}
+library(devindocker)
+```
+
+If you want to mount other volumes inside the Docker container, you can use parameter `volumes`. 
+This requires a data.frame with two columns named `local` and `docker`.
+
+- `local` contains path to local computer
+- `docker` contains path inside the docker container linked to local
+
+## Create directories to mount in the Docker
+
+The main project directory will be directly accessible at the root of RStudio server inside the Docker. It is called in `path` parameter. 
+
+```{r}
+tempdir <- tempdir()
+my_project <- normalizePath(file.path(tempdir, "myproject"), mustWork = FALSE)
+dir.create(my_project)
+```
+
+The following directory will be mounted inside the Docker container at a chosen place. In this example, we will link the additional directory inside RStudio home directory (aside the main project). 
+
+```{r}
+my_additional <- normalizePath(file.path(tempdir, "my_additional"), mustWork = FALSE)
+dir.create(my_additional)
+my_additional2 <- normalizePath(file.path(tempdir, "my_additional2"), mustWork = FALSE)
+dir.create(my_additional2)
+```
+
+## Create the table of correspondance for additional volumes
+
+```{r}
+volumes <- data.frame(
+  local = c(my_additional, my_additional2),
+  docker = c("/home/rstudio/my_additional", "/home/rstudio/my_additional2") 
+)
+```
+
+
+## Launch Docker with other volumes
+
+```{r, eval=FALSE}
+# Which container with RStudio server? ----
+container <- "rocker/geospatial:4.0.1"
+
+# Which port ? ----
+# _Useful if multiple Rstudio Server to launch
+port <- 8788
+
+# Start Docker project
+launch_proj_docker(path = my_project,
+                   container = container,
+                   port = port,
+                   volumes = volumes)
+
+# Stop Docker properly
+stop_proj_docker(path = my_project, sleep = 5)
+```

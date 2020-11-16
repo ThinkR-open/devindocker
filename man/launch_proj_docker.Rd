@@ -15,7 +15,8 @@ launch_proj_docker(
   renv_out = FALSE,
   renv_out_dir,
   update_docker = TRUE,
-  is_root = FALSE
+  is_root = FALSE,
+  volumes
 )
 
 stop_proj_docker(path, sleep = 10, network_name = "r-db", stop_network = TRUE)
@@ -44,6 +45,10 @@ in the parent directory of "path"}
 \item{is_root}{logical. Whether the Docker user has root permissions (add to sudoers).
 Can be useful if you want to simulate your CI behaviour in the Terminal using "\code{sudo R}".}
 
+\item{volumes}{data.frame with two columns named \code{local} and \code{docker}.
+\code{local} contains path to local computer.
+\code{docker} contains path inside the docker container linked to local.}
+
 \item{sleep}{Numeric. Number of seconds to wait for user to correctly stop Rstudio Server}
 
 \item{stop_network}{Logical. Whether to stop Docker network.}
@@ -63,8 +68,6 @@ tempdir <- tempdir()
 path <- file.path(tempdir, "myproject")
 usethis::create_package(path, open = FALSE)
 
-# Launch Docker
-
 # Which Rstudio container ? ----
 container <- c("thinkr/rstudio3_5_2",
                "rocker/geospatial:4.0.1")[2]
@@ -73,24 +76,26 @@ container <- c("thinkr/rstudio3_5_2",
 # _Useful if multiple Rstudio Server to launch
 port <- 8788
 
-# Start Docker project
+# _Start Docker project
 launch_proj_docker(path = path,
                    container = container,
                    port = port)
 
-# Stop Docker properly
+# _Stop Docker properly
 stop_proj_docker(path = path, sleep = 5)
 
 # With renv cache shared with host
 dir.create(file.path(tempdir, "cache"))
 tempcache <- file.path(tempdir, "cache")
-# Start Docker project
+# _Start Docker project
 launch_proj_docker(path = path,
                    container = container,
                    port = port,
                    renv_cache = tempcache)
 
-# Stop Docker properly
+# _Stop Docker properly
 stop_proj_docker(path = path, sleep = 5)
+
+# Mount with additional volumes
 }
 }
