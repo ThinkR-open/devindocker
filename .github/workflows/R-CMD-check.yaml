@@ -21,8 +21,8 @@ jobs:
         config:
           # - {os: windows-latest, r: 'release', port: '8786'}
           # - {os: macOS-latest, r: 'release', port: '8787'}
-          - {os: ubuntu-18.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest", port: '8788'}
-          # - {os: ubuntu-18.04, r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest", port: '8799'}
+          - {os: ubuntu-18.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest", port: '8787'}
+          # - {os: ubuntu-18.04, r: 'devel', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest", port: '8789'}
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true

@@ -16,7 +16,9 @@ launch_proj_docker(
   renv_out_dir,
   update_docker = TRUE,
   is_root = FALSE,
-  volumes
+  volumes,
+  open_url = TRUE,
+  url = "http://127.0.0.1"
 )
 
 stop_proj_docker(path, sleep = 10, network_name = "r-db", stop_network = TRUE)
@@ -48,6 +50,10 @@ Can be useful if you want to simulate your CI behaviour in the Terminal using "\
 \item{volumes}{data.frame with two columns named \code{local} and \code{docker}.
 \code{local} contains path to local computer.
 \code{docker} contains path inside the docker container linked to local.}
+
+\item{open_url}{Logical. Whether to open container URL in browser on http://127.0.0.1:port}
+
+\item{url}{Localhost url. Default to http://127.0.0.1}
 
 \item{sleep}{Numeric. Number of seconds to wait for user to correctly stop Rstudio Server}
 

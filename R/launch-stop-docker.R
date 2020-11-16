@@ -16,6 +16,8 @@
 #' @param volumes data.frame with two columns named `local` and `docker`.
 #'  `local` contains path to local computer.
 #'  `docker` contains path inside the docker container linked to local.
+#' @param open_url Logical. Whether to open container URL in browser on http://127.0.0.1:port
+#' @param url Localhost url. Default to http://127.0.0.1
 #'
 #' @importFrom utils browseURL
 #'
@@ -71,7 +73,9 @@ launch_proj_docker <- function(path = ".",
                                renv_out_dir,
                                update_docker = TRUE,
                                is_root = FALSE,
-                               volumes
+                               volumes,
+                               open_url = TRUE,
+                               url = "http://127.0.0.1"
                                # vbox = FALSE
 ) {
   # @param vbox Logical. If Docker run on windows in a virtual box, paths need to be changed
@@ -236,7 +240,9 @@ launch_proj_docker <- function(path = ".",
     }
   }
   Sys.sleep(5)
-  browseURL(paste0("http://127.0.0.1:", port))
+  if (isTRUE(open_url)) {
+    browseURL(paste0(url, ":", port))
+  }
 }
 
 #' Update renv instructions with last version

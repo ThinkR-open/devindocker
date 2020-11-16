@@ -22,6 +22,18 @@ usethis::use_package_doc()
 usethis::use_testthat()
 usethis::use_test("launch_proj_docker")
 
+# devindocker inside devindocker
+# _Start Docker project
+origwd <- setwd(dirname(normalizePath(".")))
+container <- "rocker/geospatial:4.0.1"
+launch_proj_docker(path = "devindocker",
+                   container = container,
+                   port = 8080)
+# _Stop Docker properly
+stop_proj_docker(path = "devindocker", sleep = 2)
+setwd(origwd)
+
+
 # Dev
 attachment::att_amend_desc()
 

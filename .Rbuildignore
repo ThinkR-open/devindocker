@@ -7,3 +7,5 @@
 ^_pkgdown\.yml$
 ^CODE_OF_CONDUCT\.md$
 ^reference$
+rstudio\_dotconfig
+rstudio\_dotrstudio
