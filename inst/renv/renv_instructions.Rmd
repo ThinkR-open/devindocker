@@ -125,6 +125,38 @@ renv::init()
 ```
 
 # During the dev process
+## Install packages
+Prefer using `renv::install()` for your package installations to be sure it uses the global {renv} cache et symbolic links.
+
+```{r}
+# From doc: ?renv::install
+# install the latest version of 'digest' on CRAN
+renv::install("digest")
+
+# install an old version of 'digest' (using CRAN archives)
+renv::install("digest@0.6.18")
+
+# install 'digest' from GitHub (latest dev. version)
+renv::install("eddelbuettel/digest")
+
+# install a package from GitHub, using specific commit
+renv::install("eddelbuettel/digest@df55b00bff33e945246eff2586717452e635032f")
+
+# install a package from Bioconductor
+# (note: requires the BiocManager package)
+renv::install("bioc::Biobase")
+
+# install from gitlab.com
+renv::install("gitlab::jimhester/covr")
+
+# install from random git
+renv::install("git::git@bitbucket.org:djnavarro/lsr.git")
+
+# install a package from local sources
+renv::install("~/path/to/package")
+```
+
+
 ## After you updated packages, added new ones or removed somes
 If you are satisfied with the effects, run:
 ```{r}
@@ -143,7 +175,7 @@ In this case, you can use the `package` parameter :
 attachment::att_amend_desc()
 # List dependencies
 custom_packages <- c(attachment::att_from_description(),
-                     "renv",
+                     "renv", "knitr",
                      "devtools", "roxygen2", "usethis",
                      "testthat", "covr", "attachment",
                      "pkgdown")
@@ -167,7 +199,7 @@ renv::snapshot(type = "explicit")
 # OR packages in DESCRIPTION + development utilities
 attachment::att_amend_desc()
 custom_packages <- c(attachment::att_from_description(),
-                     "renv",
+                     "renv", "knitr",
                      "devtools", "roxygen2", "usethis",
                      "testthat", "covr", "attachment",
                      "pkgdown")
