@@ -36,9 +36,12 @@ usethis::use_build_ignore("renv_instructions.Rmd")
 
 ## The first time you launch your project in the Docker container, run :
 ```{r}
-# Define project library out of the project. 
-# In accordance with `renv_out = TRUE` when launching {devindocker}
-Sys.setenv(RENV_PATHS_LIBRARY_ROOT = "~/.renv/library")
+# Project library position: 
+# This is default, uncomment is not necessary.
+# Sys.setenv(RENV_PATHS_LIBRARY_ROOT = "renv/library") 
+# However, if you set library out of the project, 
+# change in accordance with `renv_out = TRUE` then use:
+# Sys.setenv(RENV_PATHS_LIBRARY_ROOT = "~/.renv/library")
 
 renv::consent(TRUE) # Open the Console to answer question to proceed
 renv::activate()
@@ -62,7 +65,12 @@ Add code in this order:
 # If you have a user .Rprofile inside the container, you may want to uncomment this
 # source("~/.Rprofile")
 
-Sys.setenv(RENV_PATHS_LIBRARY_ROOT = "~/.renv/library")
+# Project library position: 
+# This is default, uncomment is not necessary.
+# Sys.setenv(RENV_PATHS_LIBRARY_ROOT = "renv/library") 
+# However, if you set library out of the project, 
+# change in accordance with `renv_out = TRUE` then use:
+# Sys.setenv(RENV_PATHS_LIBRARY_ROOT = "~/.renv/library")
 
 source("renv/activate.R")
 renv::activate()
