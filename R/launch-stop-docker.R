@@ -91,7 +91,7 @@ launch_proj_docker <- function(path = ".",
     if (!all(c("local", "docker") %in% names(volumes))) {
       stop("To mount external volumes, use a data.frame with names: 'local' and 'docker'")
     }
-    volumes[,"local"] <- normalizePath(volumes[,"local"])
+    volumes[,"local"] <- normalizePath(as.character(volumes[,"local"]))
 
     add_volumes <- paste(
       apply(volumes, 1, function(x) paste0(" -v '", x["local"], ":", x["docker"], "'")),

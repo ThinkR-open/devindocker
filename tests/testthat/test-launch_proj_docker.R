@@ -77,10 +77,58 @@ test_that("other volumes work", {
   # RStudio server has stopped
   expect_error(httr::GET(url = paste0(url, ":", port)))
 })
-unlink(my_project, recursive = TRUE)
+# unlink(my_project, recursive = TRUE)
 unlink(volumes[1,"local"], recursive = TRUE)
 unlink(volumes[2,"local"], recursive = TRUE)
 
+# Test volumes with factors ----
+my_additional <- normalizePath(file.path(tempdir, "my_additional"), mustWork = FALSE)
+dir.create(my_additional)
+my_additional2 <- normalizePath(file.path(tempdir, "my_additional2"), mustWork = FALSE)
+dir.create(my_additional2)
+
+## Create the table of correspondance for additional volumes
+volumes <- data.frame(
+  local = c(my_additional, my_additional2),
+  docker = c("/home/rstudio/my_additional", "/home/rstudio/my_additional2"),
+  stringsAsFactors = TRUE
+)
+
+test_that("other volumes as factor work", {
+  # Start Docker project
+  output <- launch_proj_docker(path = my_project,
+                               container = container,
+                               port = port,
+                               volumes = volumes,
+                               open_url = FALSE)
+
+  # RStudio server has started
+  get_html <- httr::GET(url = paste0(url, ":", port))
+  # expect_equal(get_html$status_code, 200)
+
+  # Add a file in the additional directory from inside the container
+  system(
+    paste0("docker exec ", devindocker:::clean_project_name(basename(my_project)),
+           " Rscript -e 'cat(\" test\", file = \"", volumes[1, "docker"], "/test.txt\")'")
+  )
+  expect_true(file.exists(file.path(volumes[1,"local"], "test.txt")))
+
+  system(
+    paste0("docker exec ", devindocker:::clean_project_name(basename(my_project)),
+           " Rscript -e 'cat(\" test\", file = \"", volumes[2, "docker"], "/test2.txt\")'")
+  )
+  expect_true(file.exists(file.path(volumes[2,"local"], "test2.txt")))
+
+  # Stop Docker properly
+  stop_proj_docker(path = my_project, sleep = 5)
+  # RStudio server has stopped
+  expect_error(httr::GET(url = paste0(url, ":", port)))
+})
+unlink(volumes[1,"local"], recursive = TRUE)
+unlink(volumes[2,"local"], recursive = TRUE)
+
+# Clean project
+unlink(my_project, recursive = TRUE)
 
 # _Not recommended dir name ----
 my_bad_project <- normalizePath(file.path(tempdir, "my Project"), mustWork = FALSE)
