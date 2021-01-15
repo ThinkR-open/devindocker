@@ -18,7 +18,8 @@ launch_proj_docker(
   is_root = FALSE,
   volumes,
   open_url = TRUE,
-  url = "http://127.0.0.1"
+  url = "http://127.0.0.1",
+  password = NULL
 )
 
 stop_proj_docker(path, sleep = 10, network_name = "r-db", stop_network = TRUE)
@@ -54,6 +55,9 @@ Can be useful if you want to simulate your CI behaviour in the Terminal using "\
 \item{open_url}{Logical. Whether to open container URL in browser on http://127.0.0.1:port}
 
 \item{url}{Localhost url. Default to "http://127.0.0.1". "localhost" can be a good alternative.}
+
+\item{password}{String. Default to NULL. If not NULL, \code{password} will be used as a password to open RStudio server.
+Useful in case you're using \code{{devindocker}} on a remote server.}
 
 \item{sleep}{Numeric. Number of seconds to wait for user to correctly stop Rstudio Server}
 
