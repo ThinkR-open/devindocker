@@ -35,6 +35,28 @@ test_that("launch_proj_docker and stop work", {
   expect_true(dir.exists(file.path(my_project, "rstudio_dotconfig")))
 })
 
+# Test password ----
+test_that("launch_proj_docker with password and stop work", {
+  # skip_on_ci()
+  # skip_on_cran()
+
+  # Start Docker project
+  output <- launch_proj_docker(path = my_project,
+                               container = container,
+                               port = port,
+                               open_url = FALSE,
+                               password = "my-password")
+
+  # RStudio server has started
+  get_html <- httr::GET(url = paste0(url, ":", port))
+  expect_equal(get_html$status_code, 200)
+
+  # Stop Docker properly
+  stop_proj_docker(path = my_project, sleep = 5)
+  # RStudio server has stopped
+  expect_error(httr::GET(url = paste0(url, ":", port)))
+})
+
 # Test volumes ----
 my_additional <- normalizePath(file.path(tempdir, "my_additional"), mustWork = FALSE)
 dir.create(my_additional)
