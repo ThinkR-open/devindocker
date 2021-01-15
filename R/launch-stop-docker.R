@@ -18,6 +18,8 @@
 #'  `docker` contains path inside the docker container linked to local.
 #' @param open_url Logical. Whether to open container URL in browser on http://127.0.0.1:port
 #' @param url Localhost url. Default to "http://127.0.0.1". "localhost" can be a good alternative.
+#' @param password String. Default to NULL. If not NULL, `password` will be used as a password to open RStudio server.
+#' Useful in case you're using `{devindocker}` on a remote server.
 #'
 #' @importFrom utils browseURL
 #'
@@ -75,7 +77,8 @@ launch_proj_docker <- function(path = ".",
                                is_root = FALSE,
                                volumes,
                                open_url = TRUE,
-                               url = "http://127.0.0.1"
+                               url = "http://127.0.0.1",
+                               password = NULL
                                # vbox = FALSE
 ) {
   # @param vbox Logical. If Docker run on windows in a virtual box, paths need to be changed
@@ -212,7 +215,8 @@ launch_proj_docker <- function(path = ".",
         " --net ", network_name,
         # root permission
         ifelse(isTRUE(is_root), " -e ROOT=TRUE", ""),
-        " -d -e DISABLE_AUTH=true",
+        " -d ",
+        ifelse(!is.null(password), paste0(" -e PASSWORD=", password), "-e DISABLE_AUTH=true"),
         # {renv}
         # _Global renv cache
         ifelse(!is.null(renv_cache), paste0(" -e RENV_PATHS_CACHE=", RENV_PATHS_CACHE_CONTAINER), ""),
