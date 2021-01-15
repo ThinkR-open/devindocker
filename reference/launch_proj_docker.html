@@ -179,7 +179,8 @@ Stop running Docker container" />
   is_root <span class='op'>=</span> <span class='cn'>FALSE</span>,
   <span class='va'>volumes</span>,
   open_url <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  url <span class='op'>=</span> <span class='st'>"http://127.0.0.1"</span>
+  url <span class='op'>=</span> <span class='st'>"http://127.0.0.1"</span>,
+  password <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span>
 
 <span class='fu'>stop_proj_docker</span><span class='op'>(</span><span class='va'>path</span>, sleep <span class='op'>=</span> <span class='fl'>10</span>, network_name <span class='op'>=</span> <span class='st'>"r-db"</span>, stop_network <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
@@ -243,6 +244,11 @@ Can be useful if you want to simulate your CI behaviour in the Terminal using "<
     <tr>
       <th>url</th>
       <td><p>Localhost url. Default to "http://127.0.0.1". "localhost" can be a good alternative.</p></td>
+    </tr>
+    <tr>
+      <th>password</th>
+      <td><p>String. Default to NULL. If not NULL, <code>password</code> will be used as a password to open RStudio server.
+Useful in case you're using <code>{devindocker}</code> on a remote server.</p></td>
     </tr>
     <tr>
       <th>sleep</th>
