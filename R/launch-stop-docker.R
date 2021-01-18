@@ -20,6 +20,7 @@
 #' @param url Localhost url. Default to "http://127.0.0.1". "localhost" can be a good alternative.
 #' @param password String. Default to NULL. If not NULL, `password` will be used as a password to open RStudio server.
 #' Useful in case you're using `{devindocker}` on a remote server.
+#' @param broadcast Where to broadcast the post. Default is 127.0.0.1
 #'
 #' @importFrom utils browseURL
 #'
@@ -78,7 +79,8 @@ launch_proj_docker <- function(path = ".",
                                volumes,
                                open_url = TRUE,
                                url = "http://127.0.0.1",
-                               password = NULL
+                               password = NULL,
+                               broadcast = "127.0.0.1"
                                # vbox = FALSE
 ) {
   # @param vbox Logical. If Docker run on windows in a virtual box, paths need to be changed
@@ -233,7 +235,7 @@ launch_proj_docker <- function(path = ".",
         # Addtional volumes
         ifelse(!is.null(add_volumes), add_volumes, ""),
 
-        " -p 127.0.0.1:", port, ":8787 ",
+        sprintf(" -p %s:", broadcast) , port, ":8787 ",
         container),
       intern = TRUE)
   })
