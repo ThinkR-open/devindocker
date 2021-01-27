@@ -11,6 +11,8 @@ Authors@R:
              role = "cph"))
 Description: Help develop a R project inside a Docker container.
 License: MIT + file LICENSE
+URL: https://thinkr-open.github.io/devindocker/,
+    https://github.com/Thinkr-open/devindocker
 Imports: 
     future,
     stats,
