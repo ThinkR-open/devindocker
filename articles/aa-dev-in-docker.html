@@ -20,7 +20,7 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Development in Docker">
 <meta property="og:description" content="devindocker">
-<meta property="og:image" content="/logo.png">
+<meta property="og:image" content="https://thinkr-open.github.io/devindocker/logo.png">
 <meta name="twitter:card" content="summary">
 <!-- mathjax
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -105,7 +105,12 @@
 </ul>
 </div>
         </li>
-        
+        <li>
+  <a href="https://github.com/Thinkr-open/devindocker/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
 </div>
 <!--/.nav-collapse -->
@@ -122,9 +127,9 @@
       <h1 data-toc-skip>Development in Docker</h1>
                         <h4 class="author">Sébatsien Rochette</h4>
             
-            <h4 class="date">2021-01-15</h4>
+            <h4 class="date">2021-01-27</h4>
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/Thinkr-open/devindocker/blob/master/vignettes/aa-dev-in-docker.Rmd"><code>vignettes/aa-dev-in-docker.Rmd</code></a></small>
       <div class="hidden name"><code>aa-dev-in-docker.Rmd</code></div>
 
     </div>
@@ -143,8 +148,8 @@ $(document).ready(function () {
 <code class="sourceCode R"><span class="va">tempdir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>
 <span class="va">my_project</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/normalizePath.html">normalizePath</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>, mustWork <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="fu">usethis</span><span class="fu">::</span><span class="fu"><a href="https://usethis.r-lib.org/reference/create_package.html">create_package</a></span><span class="op">(</span><span class="va">my_project</span>, open <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<pre><code>## ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp12qTv0/myproject/'</code></pre>
-<pre><code>## ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/Rtmp12qTv0/myproject'</code></pre>
+<pre><code>## ✔ Creating '/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpIR0FmH/myproject/'</code></pre>
+<pre><code>## ✔ Setting active project to '/private/var/folders/24/8k48jl6d249_n_qfxwsl6xvm0000gn/T/RtmpIR0FmH/myproject'</code></pre>
 <pre><code>## ✔ Creating 'R/'</code></pre>
 <pre><code>## ✔ Writing 'DESCRIPTION'</code></pre>
 <pre><code>## Package: myproject

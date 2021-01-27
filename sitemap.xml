@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://thinkr-open.github.io/devindocker//index.html</loc>
+  </url>
+  <url>
+    <loc>https://thinkr-open.github.io/devindocker//reference/devindocker-package.html</loc>
+  </url>
+  <url>
+    <loc>https://thinkr-open.github.io/devindocker//reference/launch_proj_docker.html</loc>
+  </url>
+  <url>
+    <loc>https://thinkr-open.github.io/devindocker//reference/update_renv_help.html</loc>
+  </url>
+  <url>
+    <loc>https://thinkr-open.github.io/devindocker//articles/aa-dev-in-docker.html</loc>
+  </url>
+  <url>
+    <loc>https://thinkr-open.github.io/devindocker//articles/ab-dev-in-docker-with-renv.html</loc>
+  </url>
+  <url>
+    <loc>https://thinkr-open.github.io/devindocker//articles/ac-docker-network.html</loc>
+  </url>
+  <url>
+    <loc>https://thinkr-open.github.io/devindocker//articles/ac-docker-volumes.html</loc>
+  </url>
+</urlset>

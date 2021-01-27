@@ -20,7 +20,7 @@
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Help Develop a R Project Inside a Docker Container">
 <meta property="og:description" content="Help develop a R project inside a Docker container.">
-<meta property="og:image" content="/logo.png">
+<meta property="og:image" content="https://thinkr-open.github.io/devindocker/logo.png">
 <meta name="twitter:card" content="summary">
 <!-- mathjax
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
@@ -105,7 +105,12 @@
 </ul>
 </div>
         </li>
-        
+        <li>
+  <a href="https://github.com/Thinkr-open/devindocker/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
 </div>
 <!--/.nav-collapse -->
@@ -157,7 +162,7 @@
 <a href="#work-in-a-docker-environment" class="anchor"></a>Work in a Docker environment</h3>
 <p>Launch a Docker container with your directory inside. This should be a container with Rstudio server inside.<br><em>Note that you start outside your project, which means you will have to start a new RStudio project if this is your way of working.</em><br><em>Note that packages you install will not be kept after you stop the container, but RStudio preferences will.</em></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">devindocker</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://thinkr-open.github.io/devindocker/">devindocker</a></span><span class="op">)</span>
 <span class="co"># Which path to your working directory / project</span>
 <span class="va">path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">tempdir</span>, <span class="st">"myproject"</span><span class="op">)</span>
 
@@ -252,7 +257,14 @@ See <a href="https://thinkr-open.github.io/devindocker/articles/ac-docker-networ
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="license">
+    <div class="links">
+<h2>Links</h2>
+<ul class="list-unstyled">
+<li>Browse source code at <br><a href="https://github.com/Thinkr-open/devindocker/">https://​github.com/​Thinkr-open/​devindocker/​</a>
+</li>
+</ul>
+</div>
+<div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
