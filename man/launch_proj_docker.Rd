@@ -19,7 +19,8 @@ launch_proj_docker(
   volumes,
   open_url = TRUE,
   url = "http://127.0.0.1",
-  password = NULL
+  password = NULL,
+  mount_mode = NULL
 )
 
 stop_proj_docker(path, sleep = 10, network_name = "r-db", stop_network = TRUE)
@@ -58,6 +59,12 @@ Can be useful if you want to simulate your CI behaviour in the Terminal using "\
 
 \item{password}{String. Default to NULL. If not NULL, \code{password} will be used as a password to open RStudio server.
 Useful in case you're using \code{{devindocker}} on a remote server.}
+
+\item{mount_mode}{Optional bind-mount consistency mode passed to every \code{-v}
+flag in the \verb{docker run} command. Recommended values on macOS are
+\code{"delegated"} (best for high-I/O volumes such as the renv cache and the
+RStudio config directory) or \code{"cached"}. Defaults to \code{NULL} (no mode
+suffix), which matches the behaviour before this option was introduced.}
 
 \item{sleep}{Numeric. Number of seconds to wait for user to correctly stop Rstudio Server}
 

@@ -20,6 +20,11 @@
 #' @param url Localhost url. Default to "http://127.0.0.1". "localhost" can be a good alternative.
 #' @param password String. Default to NULL. If not NULL, `password` will be used as a password to open RStudio server.
 #' Useful in case you're using `{devindocker}` on a remote server.
+#' @param mount_mode Optional bind-mount consistency mode passed to every `-v`
+#'   flag in the `docker run` command. Recommended values on macOS are
+#'   `"delegated"` (best for high-I/O volumes such as the renv cache and the
+#'   RStudio config directory) or `"cached"`. Defaults to `NULL` (no mode
+#'   suffix), which matches the behaviour before this option was introduced.
 #'
 #' @importFrom utils browseURL
 #'
@@ -78,7 +83,8 @@ launch_proj_docker <- function(path = ".",
                                volumes,
                                open_url = TRUE,
                                url = "http://127.0.0.1",
-                               password = NULL
+                               password = NULL,
+                               mount_mode = NULL
                                # vbox = FALSE
 ) {
   # @param vbox Logical. If Docker run on windows in a virtual box, paths need to be changed
@@ -97,7 +103,7 @@ launch_proj_docker <- function(path = ".",
     volumes[,"local"] <- normalizePath(as.character(volumes[,"local"]))
 
     add_volumes <- paste(
-      apply(volumes, 1, function(x) paste0(" -v '", x["local"], ":", x["docker"], "'")),
+      apply(volumes, 1, function(x) build_volume_arg(x["local"], x["docker"], mode = mount_mode)),
       collapse = ""
     )
   } else {
@@ -220,15 +226,15 @@ launch_proj_docker <- function(path = ".",
         # {renv}
         # _Global renv cache
         ifelse(!is.null(renv_cache), paste0(" -e RENV_PATHS_CACHE=", RENV_PATHS_CACHE_CONTAINER), ""),
-        ifelse(!is.null(renv_cache), paste0(" -v ", RENV_PATHS_CACHE_HOST, ":", RENV_PATHS_CACHE_CONTAINER), ""),
+        ifelse(!is.null(renv_cache), build_volume_arg(RENV_PATHS_CACHE_HOST, RENV_PATHS_CACHE_CONTAINER, mode = mount_mode), ""),
         # _Project renv library
         ifelse(isTRUE(renv_out), paste0(" -e RENV_PATHS_LIBRARY_ROOT=", RENV_PATHS_LIBRARY_ROOT_CONTAINER), ""),
-        ifelse(isTRUE(renv_out), paste0(" -v ", RENV_PATHS_LIBRARY_ROOT_HOST, ":", RENV_PATHS_LIBRARY_ROOT_CONTAINER), ""),
+        ifelse(isTRUE(renv_out), build_volume_arg(RENV_PATHS_LIBRARY_ROOT_HOST, RENV_PATHS_LIBRARY_ROOT_CONTAINER, mode = mount_mode), ""),
 
         # Rstudio server
-        " -v '", path, ":/home/rstudio/", projectname, "'",
-        " -v '", normalizePath(file.path(path, "rstudio_dotconfig"), mustWork = TRUE), ":/home/rstudio/.config'", #/rstudio
-        " -v '", normalizePath(file.path(path, "rstudio_dotrstudio"), mustWork = TRUE), ":/home/rstudio/.rstudio'",
+        build_volume_arg(path, paste0("/home/rstudio/", projectname), mode = mount_mode),
+        build_volume_arg(normalizePath(file.path(path, "rstudio_dotconfig"), mustWork = TRUE), "/home/rstudio/.config", mode = mount_mode),
+        build_volume_arg(normalizePath(file.path(path, "rstudio_dotrstudio"), mustWork = TRUE), "/home/rstudio/.rstudio", mode = mount_mode),
 
         # Addtional volumes
         ifelse(!is.null(add_volumes), add_volumes, ""),
@@ -296,4 +302,37 @@ clean_project_name <- function(x) {
 }
 clean_dir_name <- function(x) {
   gsub(" ", "\\", x)
+}
+
+#' Render a docker `-v` volume argument, optionally with a mount mode
+#'
+#' On macOS, high-I/O bind mounts (e.g. the renv cache or RStudio's config
+#' directory) benefit from the `delegated` or `cached` consistency mode to
+#' reduce FS latency. This helper is used by [launch_proj_docker()] to build
+#' every `-v` flag.
+#'
+#' @param local host path to mount.
+#' @param container container mount point.
+#' @param mode one of `NULL` / `NA` (no mode suffix), `"delegated"`,
+#'   `"cached"` or `"consistent"`. See
+#'   <https://docs.docker.com/engine/storage/bind-mounts/> for details.
+#'
+#' @return a single string like `" -v '/host:/container[:mode]'"`, including
+#'   a leading space so the result can be concatenated into the `docker run`
+#'   command as-is.
+#' @export
+build_volume_arg <- function(local, container, mode = NULL) {
+  if (!is.null(mode) && !is.na(mode)) {
+    allowed <- c("delegated", "cached", "consistent")
+    if (!mode %in% allowed) {
+      stop(
+        "`mode` must be one of: ", paste(allowed, collapse = ", "),
+        " (got '", mode, "')",
+        call. = FALSE
+      )
+    }
+    sprintf(" -v '%s:%s:%s'", local, container, mode)
+  } else {
+    sprintf(" -v '%s:%s'", local, container)
+  }
 }
