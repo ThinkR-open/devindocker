@@ -6,9 +6,17 @@
 \alias{devindocker-package}
 \title{devindocker: Help Develop a R Project Inside a Docker Container}
 \description{
-\if{html}{\figure{logo.png}{options: align='right' alt='logo' width='120'}}
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
 Help develop a R project inside a Docker container.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://thinkr-open.github.io/devindocker/}
+  \item \url{https://github.com/Thinkr-open/devindocker}
+}
+
 }
 \author{
 \strong{Maintainer}: Sébastien Rochette \email{sebastien@thinkr.fr} (\href{https://orcid.org/0000-0002-1565-9313}{ORCID})
